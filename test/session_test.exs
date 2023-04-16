@@ -1,0 +1,59 @@
+defmodule X32Remote.SessionTest do
+  use ExUnit.Case, async: true
+
+  alias OSC.Message
+  alias ExOSC.MockClient
+  alias X32Remote.Session
+
+  test "cast_message/2 sends message" do
+    {:ok, client} = start_supervised(MockClient)
+    {:ok, session} = start_supervised({Session, client: client})
+
+    msg = %Message{path: "/ch/17/mix/fader", args: [1.0]}
+    Session.cast_message(session, msg)
+    assert ^msg = MockClient.next_request(client)
+  end
+
+  test "cast_command/3 creates and sends message" do
+    {:ok, client} = start_supervised(MockClient)
+    {:ok, session} = start_supervised({Session, client: client})
+
+    Session.cast_command(session, "/main/st/mix/on", [1])
+    assert msg = MockClient.next_request(client)
+    assert %Message{path: "/main/st/mix/on", args: [1]} = msg
+  end
+
+  test "call_message/2 sends message and waits for reply" do
+    {:ok, client} = start_supervised(MockClient)
+    {:ok, session} = start_supervised({Session, client: client})
+
+    query = %Message{path: "/ch/01/mix/fader"}
+    reply = %Message{query | args: [0.75]}
+
+    MockClient.mock_reply(client, reply)
+    assert Session.call_message(session, query) == [0.75]
+  end
+
+  test "call_command/3 creates and sends message, and waits for reply" do
+    {:ok, client} = start_supervised(MockClient)
+    {:ok, session} = start_supervised({Session, client: client})
+
+    reply = %Message{path: "/mtx/03/mix/on", args: [1]}
+    MockClient.mock_reply(client, reply)
+
+    assert Session.call_command(session, "/mtx/03/mix/on", []) == [1]
+  end
+
+  test "call_* ignores messages for other paths" do
+    {:ok, client} = start_supervised(MockClient)
+    {:ok, session} = start_supervised({Session, client: client})
+
+    MockClient.mock_reply(client, %Message{path: "/ch/01/mix/fader", args: [0.10]})
+    MockClient.mock_reply(client, %Message{path: "/ch/02/mix/fader", args: [0.20]})
+    MockClient.mock_reply(client, %Message{path: "/ch/03/mix/fader", args: [0.30]})
+    MockClient.mock_reply(client, %Message{path: "/ch/04/mix/fader", args: [0.40]})
+    MockClient.mock_reply(client, %Message{path: "/ch/05/mix/fader", args: [0.50]})
+
+    assert Session.call_command(session, "/ch/04/mix/fader") == [0.40]
+  end
+end
