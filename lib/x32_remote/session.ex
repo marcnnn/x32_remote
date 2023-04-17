@@ -1,5 +1,7 @@
 defmodule X32Remote.Session do
   use GenStage
+  require Logger
+
   alias OSC.Message
   import X32Remote.Guards
 
@@ -43,12 +45,14 @@ defmodule X32Remote.Session do
 
   @impl true
   def handle_call({:send_wait, msg}, from, state) do
+    Logger.debug(">>> #{inspect(msg)}")
     ExOSC.Client.send_message(state.client, msg)
     {:noreply, [], state |> add_pending_reply(msg, from)}
   end
 
   @impl true
   def handle_cast({:send, msg}, state) do
+    Logger.debug(">>> #{inspect(msg)}")
     ExOSC.Client.send_message(state.client, msg)
     {:noreply, [], state}
   end
@@ -65,6 +69,7 @@ defmodule X32Remote.Session do
   end
 
   defp handle_one_event(%Message{} = msg, state) do
+    Logger.debug("<<< #{inspect(msg)}")
     {reply_to, replies} = Map.pop(state.replies, msg.path, [])
     Enum.each(reply_to, &GenStage.reply(&1, msg.args))
     %State{state | replies: replies}
