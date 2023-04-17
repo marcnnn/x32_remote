@@ -1,13 +1,10 @@
 defmodule X32Remote.Commands.SetupTest do
-  use ExUnit.Case, async: true
+  use X32R.TestCase, async: true
 
-  alias OSC.Message
-  alias ExOSC.MockClient
-  alias X32Remote.{Session, Commands}
+  alias X32Remote.Commands
 
   test "clock_set/2" do
-    {:ok, client} = start_supervised(MockClient)
-    {:ok, session} = start_supervised({Session, client: client})
+    {:ok, client, session} = setup_mock_session()
 
     assert :ok = Commands.Setup.clock_set(session, ~N[2023-04-16 14:15:16])
 

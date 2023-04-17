@@ -1,4 +1,4 @@
-defmodule ExOSC.MockClient do
+defmodule X32R.MockClient do
   use GenStage
   alias OSC.Message
 
