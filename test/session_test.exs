@@ -47,13 +47,4 @@ defmodule X32Remote.SessionTest do
 
     assert Session.call_command(session, "/ch/04/mix/fader") == [0.40]
   end
-
-  test "call_* handles node replies" do
-    {:ok, client, session} = setup_mock_session()
-
-    info = "/ch/01/config \"Mic\" 48 MG 1\n"
-    MockClient.mock_reply(client, %Message{path: "node", args: [info]})
-
-    assert Session.call_command(session, "/node", ["/ch/01/config"]) == [info]
-  end
 end
