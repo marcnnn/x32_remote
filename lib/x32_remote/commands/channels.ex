@@ -14,11 +14,14 @@ defmodule X32Remote.Commands.Channels do
     end
   end
 
-  def mute(pid, channel, mute) when is_boolean(mute) do
+  def mute(pid, channel) do
     ensure_channel(channel)
+    Session.cast_command(pid, "/#{channel}/mix/on", [0])
+  end
 
-    arg = if mute, do: 0, else: 1
-    Session.cast_command(pid, "/#{channel}/mix/on", [arg])
+  def unmute(pid, channel) do
+    ensure_channel(channel)
+    Session.cast_command(pid, "/#{channel}/mix/on", [1])
   end
 
   def fader_get(pid, channel) do

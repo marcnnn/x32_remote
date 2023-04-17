@@ -18,13 +18,17 @@ defmodule X32Remote.Commands.ChannelsTest do
            ]
   end
 
-  test "mute/3" do
+  test "mute/2" do
     {:ok, client, session} = setup_mock_session()
 
-    assert :ok = Commands.Channels.mute(session, "ch/06", true)
-    assert :ok = Commands.Channels.mute(session, "ch/07", false)
-
+    assert :ok = Commands.Channels.mute(session, "ch/06")
     assert MockClient.next_request(client) == %Message{path: "/ch/06/mix/on", args: [0]}
+  end
+
+  test "unmute/2" do
+    {:ok, client, session} = setup_mock_session()
+
+    assert :ok = Commands.Channels.unmute(session, "ch/07")
     assert MockClient.next_request(client) == %Message{path: "/ch/07/mix/on", args: [1]}
   end
 
