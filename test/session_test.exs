@@ -17,17 +17,17 @@ defmodule X32Remote.SessionTest do
     assert %Message{path: "/main/st/mix/on", args: [1]} = msg
   end
 
-  test "call_message/2 sends message and waits for reply" do
+  test "call_message/2 sends message and returns reply message" do
     {:ok, client, session} = setup_mock_session()
 
     query = %Message{path: "/ch/01/mix/fader"}
     reply = %Message{query | args: [0.75]}
 
     MockClient.mock_reply(client, reply)
-    assert Session.call_message(session, query) == [0.75]
+    assert Session.call_message(session, query) == reply
   end
 
-  test "call_command/3 creates and sends message, and waits for reply" do
+  test "call_command/3 creates and sends message and returns reply arguments" do
     {:ok, client, session} = setup_mock_session()
 
     reply = %Message{path: "/mtx/03/mix/on", args: [1]}

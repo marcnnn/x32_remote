@@ -29,7 +29,7 @@ defmodule X32Remote.Session do
 
   def call_command(pid, cmd, args \\ []) when is_name(pid) and is_binary(cmd) and is_list(args) do
     msg = Message.construct(cmd, args)
-    call_message(pid, msg)
+    call_message(pid, msg).args
   end
 
   def cast_command(pid, cmd, args \\ []) when is_name(pid) and is_binary(cmd) and is_list(args) do
@@ -71,7 +71,7 @@ defmodule X32Remote.Session do
   defp handle_one_event(%Message{} = msg, state) do
     Logger.debug("<<< #{inspect(msg)}")
     {reply_to, replies} = Map.pop(state.replies, msg.path |> reply_lookup_path(), [])
-    Enum.each(reply_to, &GenStage.reply(&1, msg.args))
+    Enum.each(reply_to, &GenStage.reply(&1, msg))
     %State{state | replies: replies}
   end
 
