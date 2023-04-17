@@ -3,7 +3,7 @@ defmodule X32Remote.Guards do
 
   defguard is_volume(v)
            when (is_float(v) and v >= 0.0 and v <= 1.0) or
-                  (is_integer(v) and v >= 0 and v <= 1024)
+                  (is_integer(v) and v >= 0 and v <= 1023)
 
   defmodule Channels do
     def channel?("ch/" <> n), do: twodigit(n) in 1..32
