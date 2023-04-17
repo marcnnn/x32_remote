@@ -1,49 +1,41 @@
-defmodule X32Remote.Commands.ChannelsTest do
+defmodule X32Remote.Commands.InfoTest do
   use X32R.TestCase, async: true
 
   alias X32Remote.Commands
 
-  test "muted?/2" do
+  test "info/1" do
     {:ok, client, session} = setup_mock_session()
 
-    MockClient.mock_reply(client, %Message{path: "/ch/04/mix/on", args: [1]})
-    assert Commands.Channels.muted?(session, "ch/04") == false
+    info = ["V2.07", "osc-server", "X32RACK", "4.06-8"]
+    MockClient.mock_reply(client, %Message{path: "/info", args: info})
 
-    MockClient.mock_reply(client, %Message{path: "/ch/05/mix/on", args: [0]})
-    assert Commands.Channels.muted?(session, "ch/05") == true
+    assert Commands.Info.info(session) == info
 
-    assert MockClient.requests(client) == [
-             %Message{path: "/ch/04/mix/on"},
-             %Message{path: "/ch/05/mix/on"}
-           ]
+    assert [msg] = MockClient.requests(client)
+    assert msg == %Message{path: "/info"}
   end
 
-  test "mute/3" do
+  test "xinfo/1" do
     {:ok, client, session} = setup_mock_session()
 
-    assert :ok = Commands.Channels.mute(session, "ch/06", true)
-    assert :ok = Commands.Channels.mute(session, "ch/07", false)
+    xinfo = ["192.168.1.1", "My Mixer", "X32RACK", "4.06-8"]
+    MockClient.mock_reply(client, %Message{path: "/xinfo", args: xinfo})
 
-    assert MockClient.next_request(client) == %Message{path: "/ch/06/mix/on", args: [0]}
-    assert MockClient.next_request(client) == %Message{path: "/ch/07/mix/on", args: [1]}
+    assert Commands.Info.xinfo(session) == xinfo
+
+    assert [msg] = MockClient.requests(client)
+    assert msg == %Message{path: "/xinfo"}
   end
 
-  test "fader_get/2" do
+  test "status/1" do
     {:ok, client, session} = setup_mock_session()
 
-    MockClient.mock_reply(client, %Message{path: "/ch/08/mix/fader", args: [0.5]})
-    assert Commands.Channels.fader_get(session, "ch/08") == 0.5
+    status = ["active", "192.168.1.1", "My Mixer"]
+    MockClient.mock_reply(client, %Message{path: "/status", args: status})
 
-    assert MockClient.requests(client) == [%Message{path: "/ch/08/mix/fader"}]
-  end
+    assert Commands.Info.status(session) == status
 
-  test "fader_set/3" do
-    {:ok, client, session} = setup_mock_session()
-
-    assert :ok = Commands.Channels.fader_set(session, "ch/09", 0.75)
-    assert :ok = Commands.Channels.fader_set(session, "ch/09", 512)
-
-    assert MockClient.next_request(client) == %Message{path: "/ch/09/mix/fader", args: [0.75]}
-    assert MockClient.next_request(client) == %Message{path: "/ch/09/mix/fader", args: [512]}
+    assert [msg] = MockClient.requests(client)
+    assert msg == %Message{path: "/status"}
   end
 end
