@@ -64,7 +64,7 @@ defmodule X32R.MockClient do
       case state.waiting do
         {_, _} = from ->
           GenStage.reply(from, msg)
-          %State{waiting: nil}
+          %State{state | waiting: nil}
 
         nil ->
           %State{state | requests: :queue.in(msg, state.requests)}
