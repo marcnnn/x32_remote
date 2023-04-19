@@ -1,12 +1,12 @@
 defmodule X32Remote.Commands.SetupTest do
   use X32R.TestCase, async: true
 
-  alias X32Remote.Commands
+  alias X32Remote.Commands.Setup
 
-  test "clock_set/2" do
+  test "clock_set/2 sets clock to formatted date and time" do
     {:ok, client, session} = setup_mock_session()
 
-    assert :ok = Commands.Setup.clock_set(session, ~N[2023-04-16 14:15:16])
+    assert :ok = Setup.clock_set(session, ~N[2023-04-16 14:15:16])
 
     assert MockClient.next_request(client) == %Message{
              path: "/-action/setclock",
