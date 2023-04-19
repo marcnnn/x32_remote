@@ -1,16 +1,16 @@
-defmodule X32Remote.Commands.ChannelsTest do
+defmodule X32Remote.MixTest do
   use X32R.TestCase, async: true
 
-  alias X32Remote.Commands
+  alias X32Remote.Commands.Mix
 
   test "muted?/2" do
     {:ok, client, session} = setup_mock_session()
 
     MockClient.mock_reply(client, %Message{path: "/ch/04/mix/on", args: [1]})
-    assert Commands.Channels.muted?(session, "ch/04") == false
+    assert Mix.muted?(session, "ch/04") == false
 
     MockClient.mock_reply(client, %Message{path: "/ch/05/mix/on", args: [0]})
-    assert Commands.Channels.muted?(session, "ch/05") == true
+    assert Mix.muted?(session, "ch/05") == true
 
     assert MockClient.requests(client) == [
              %Message{path: "/ch/04/mix/on"},
@@ -21,14 +21,14 @@ defmodule X32Remote.Commands.ChannelsTest do
   test "mute/2" do
     {:ok, client, session} = setup_mock_session()
 
-    assert :ok = Commands.Channels.mute(session, "ch/06")
+    assert :ok = Mix.mute(session, "ch/06")
     assert MockClient.next_request(client) == %Message{path: "/ch/06/mix/on", args: [0]}
   end
 
   test "unmute/2" do
     {:ok, client, session} = setup_mock_session()
 
-    assert :ok = Commands.Channels.unmute(session, "ch/07")
+    assert :ok = Mix.unmute(session, "ch/07")
     assert MockClient.next_request(client) == %Message{path: "/ch/07/mix/on", args: [1]}
   end
 
@@ -36,7 +36,7 @@ defmodule X32Remote.Commands.ChannelsTest do
     {:ok, client, session} = setup_mock_session()
 
     MockClient.mock_reply(client, %Message{path: "/ch/08/mix/fader", args: [0.5]})
-    assert Commands.Channels.fader_get(session, "ch/08") == 0.5
+    assert Mix.fader_get(session, "ch/08") == 0.5
 
     assert MockClient.requests(client) == [%Message{path: "/ch/08/mix/fader"}]
   end
@@ -44,8 +44,8 @@ defmodule X32Remote.Commands.ChannelsTest do
   test "fader_set/3" do
     {:ok, client, session} = setup_mock_session()
 
-    assert :ok = Commands.Channels.fader_set(session, "ch/09", 0.75)
-    assert :ok = Commands.Channels.fader_set(session, "ch/09", 512)
+    assert :ok = Mix.fader_set(session, "ch/09", 0.75)
+    assert :ok = Mix.fader_set(session, "ch/09", 512)
 
     assert MockClient.next_request(client) == %Message{path: "/ch/09/mix/fader", args: [0.75]}
     assert MockClient.next_request(client) == %Message{path: "/ch/09/mix/fader", args: [512]}

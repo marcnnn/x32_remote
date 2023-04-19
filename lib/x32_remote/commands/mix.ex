@@ -1,4 +1,4 @@
-defmodule X32Remote.Commands.Channels do
+defmodule X32Remote.Commands.Mix do
   alias X32Remote.Session
 
   require X32Remote.Guards

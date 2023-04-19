@@ -2,7 +2,7 @@ defmodule X32Remote.Mixer do
   @session X32Remote.Supervisor.Session
 
   [
-    X32Remote.Commands.Channels,
+    X32Remote.Commands.Mix,
     X32Remote.Commands.Info,
     X32Remote.Commands.Setup
   ]
