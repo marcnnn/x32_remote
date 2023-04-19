@@ -24,14 +24,14 @@ defmodule X32Remote.Commands.Mix do
     Session.cast_command(pid, "/#{channel}/mix/on", [1])
   end
 
-  def fader_get(pid, channel) do
+  def get_fader(pid, channel) do
     ensure_channel(channel)
 
     Session.call_command(pid, "/#{channel}/mix/fader", [])
     |> then(fn [v] when is_float(v) -> v end)
   end
 
-  def fader_set(pid, channel, volume) when is_volume(volume) do
+  def set_fader(pid, channel, volume) when is_volume(volume) do
     ensure_channel(channel)
 
     Session.cast_command(pid, "/#{channel}/mix/fader", [volume])

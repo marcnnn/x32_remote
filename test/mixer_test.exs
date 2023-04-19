@@ -22,8 +22,8 @@ defmodule X32Remote.MixerTest do
   test "casts commands to server" do
     {:ok, server, _} = start()
 
-    X32Remote.Mixer.fader_set("ch/21", 121)
-    X32Remote.Mixer.fader_set("ch/22", 222)
+    X32Remote.Mixer.set_fader("ch/21", 121)
+    X32Remote.Mixer.set_fader("ch/22", 222)
     X32Remote.Mixer.mute("ch/23")
     X32Remote.Mixer.unmute("ch/24")
 
@@ -46,7 +46,7 @@ defmodule X32Remote.MixerTest do
     assert X32Remote.Mixer.status() == status
 
     MockServer.mock_reply(server, %Message{path: "/ch/32/mix/fader", args: [0.75]})
-    assert X32Remote.Mixer.fader_get("ch/32") == 0.75
+    assert X32Remote.Mixer.get_fader("ch/32") == 0.75
 
     assert MockServer.requests(server) == [
              %OSC.Message{path: "/info", args: []},

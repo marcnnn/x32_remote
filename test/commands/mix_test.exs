@@ -27,21 +27,21 @@ defmodule X32Remote.Commands.MixTest do
     assert MockClient.next_request(client) == %Message{path: "/ch/07/mix/on", args: [1]}
   end
 
-  test "fader_get/2 returns mix/fader" do
+  test "get_fader/2 returns mix/fader" do
     {:ok, client, session} = setup_mock_session()
     MockClient.mock_reply(client, %Message{path: "/ch/08/mix/fader", args: [0.5]})
-    assert Mix.fader_get(session, "ch/08") == 0.5
+    assert Mix.get_fader(session, "ch/08") == 0.5
   end
 
-  test "fader_set/3 with float sets mix/fader" do
+  test "set_fader/3 with float sets mix/fader" do
     {:ok, client, session} = setup_mock_session()
-    assert :ok = Mix.fader_set(session, "ch/09", 0.75)
+    assert :ok = Mix.set_fader(session, "ch/09", 0.75)
     assert MockClient.next_request(client) == %Message{path: "/ch/09/mix/fader", args: [0.75]}
   end
 
-  test "fader_set/3 with integer sets mix/fader" do
+  test "set_fader/3 with integer sets mix/fader" do
     {:ok, client, session} = setup_mock_session()
-    assert :ok = Mix.fader_set(session, "ch/09", 512)
+    assert :ok = Mix.set_fader(session, "ch/09", 512)
     assert MockClient.next_request(client) == %Message{path: "/ch/09/mix/fader", args: [512]}
   end
 end
