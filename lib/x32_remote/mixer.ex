@@ -3,6 +3,7 @@ defmodule X32Remote.Mixer do
 
   [
     X32Remote.Commands.Mix,
+    X32Remote.Commands.Solo,
     X32Remote.Commands.Info,
     X32Remote.Commands.Setup
   ]

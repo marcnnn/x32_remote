@@ -3,7 +3,7 @@ defmodule X32Remote.Session do
   require Logger
 
   alias OSC.Message
-  import X32Remote.Guards
+  import X32Remote.Types
 
   defmodule State do
     @enforce_keys [:client]

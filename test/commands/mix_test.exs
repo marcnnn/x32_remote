@@ -41,7 +41,73 @@ defmodule X32Remote.Commands.MixTest do
 
   test "set_fader/3 with integer sets mix/fader" do
     {:ok, client, session} = setup_mock_session()
-    assert :ok = Mix.set_fader(session, "ch/09", 512)
-    assert MockClient.next_request(client) == %Message{path: "/ch/09/mix/fader", args: [512]}
+    assert :ok = Mix.set_fader(session, "ch/10", 512)
+    assert MockClient.next_request(client) == %Message{path: "/ch/10/mix/fader", args: [512]}
+  end
+
+  test "get_panning/2 returns mix/panning" do
+    {:ok, client, session} = setup_mock_session()
+    MockClient.mock_reply(client, %Message{path: "/ch/11/mix/pan", args: [0.2]})
+    assert Mix.get_panning(session, "ch/11") == 0.2
+  end
+
+  test "set_panning/3 with float sets mix/panning" do
+    {:ok, client, session} = setup_mock_session()
+    assert :ok = Mix.set_panning(session, "ch/12", 0.25)
+    assert MockClient.next_request(client) == %Message{path: "/ch/12/mix/pan", args: [0.25]}
+  end
+
+  test "set_panning/3 with integer sets mix/panning" do
+    {:ok, client, session} = setup_mock_session()
+    assert :ok = Mix.set_panning(session, "ch/13", 42)
+    assert MockClient.next_request(client) == %Message{path: "/ch/13/mix/pan", args: [42]}
+  end
+
+  test "main_stereo_out?/2 returns true if mix/st is 1" do
+    {:ok, client, session} = setup_mock_session()
+    MockClient.mock_reply(client, %Message{path: "/ch/14/mix/st", args: [1]})
+    assert Mix.main_stereo_out?(session, "ch/14") == true
+  end
+
+  test "main_stereo_out?/2 returns false if mix/st is 0" do
+    {:ok, client, session} = setup_mock_session()
+    MockClient.mock_reply(client, %Message{path: "/ch/15/mix/st", args: [0]})
+    assert Mix.main_stereo_out?(session, "ch/15") == false
+  end
+
+  test "enable_main_stereo_out/2 sets mix/st to 1" do
+    {:ok, client, session} = setup_mock_session()
+    assert :ok = Mix.enable_main_stereo_out(session, "ch/16")
+    assert MockClient.next_request(client) == %Message{path: "/ch/16/mix/st", args: [1]}
+  end
+
+  test "disable_main_stereo_out/2 sets mix/st to 0" do
+    {:ok, client, session} = setup_mock_session()
+    assert :ok = Mix.disable_main_stereo_out(session, "ch/17")
+    assert MockClient.next_request(client) == %Message{path: "/ch/17/mix/st", args: [0]}
+  end
+
+  test "main_mono_out?/2 returns true if mix/mono is 1" do
+    {:ok, client, session} = setup_mock_session()
+    MockClient.mock_reply(client, %Message{path: "/ch/18/mix/mono", args: [1]})
+    assert Mix.main_mono_out?(session, "ch/18") == true
+  end
+
+  test "main_mono_out?/2 returns false if mix/mono is 0" do
+    {:ok, client, session} = setup_mock_session()
+    MockClient.mock_reply(client, %Message{path: "/ch/19/mix/mono", args: [0]})
+    assert Mix.main_mono_out?(session, "ch/19") == false
+  end
+
+  test "enable_main_mono_out/2 sets mix/mono to 1" do
+    {:ok, client, session} = setup_mock_session()
+    assert :ok = Mix.enable_main_mono_out(session, "ch/20")
+    assert MockClient.next_request(client) == %Message{path: "/ch/20/mix/mono", args: [1]}
+  end
+
+  test "disable_main_mono_out/2 sets mix/mono to 0" do
+    {:ok, client, session} = setup_mock_session()
+    assert :ok = Mix.disable_main_mono_out(session, "ch/21")
+    assert MockClient.next_request(client) == %Message{path: "/ch/21/mix/mono", args: [0]}
   end
 end
