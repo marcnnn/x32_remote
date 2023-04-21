@@ -32,7 +32,7 @@ defmodule X32Remote.MixProject do
       {:gen_stage, "~> 1.2.1"},
       {:ex_osc, "~> 0.1.1"},
       {:mix_test_watch, "~> 1.0", only: :dev, runtime: false},
-      {:ex_git_test, github: "wisq/ex_git_test", tag: "main", only: :test, runtime: false}
+      {:ex_git_test, "~> 0.1.2", only: [:dev, :test], runtime: false}
     ]
   end
 end
