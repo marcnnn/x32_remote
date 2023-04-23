@@ -3,7 +3,6 @@ defmodule X32Remote.Session do
   require Logger
 
   alias OSC.Message
-  import X32Remote.Types
 
   defmodule State do
     @enforce_keys [:client]
@@ -19,26 +18,26 @@ defmodule X32Remote.Session do
     GenStage.start_link(__MODULE__, client, opts)
   end
 
-  def call_message(pid, %Message{} = msg) when is_name(pid) do
-    GenStage.call(pid, {:send_wait, msg})
+  def call_message(session, %Message{} = msg) do
+    GenStage.call(session, {:send_wait, msg})
   end
 
-  def cast_message(pid, %Message{} = msg) when is_name(pid) do
-    GenStage.cast(pid, {:send, msg})
+  def cast_message(session, %Message{} = msg) do
+    GenStage.cast(session, {:send, msg})
   end
 
-  def call_command(pid, cmd, args \\ []) when is_name(pid) and is_binary(cmd) and is_list(args) do
-    msg = Message.construct(cmd, args)
-    call_message(pid, msg).args
+  def call_command(session, path, args \\ []) do
+    msg = Message.construct(path, args)
+    call_message(session, msg).args
   end
 
-  def cast_command(pid, cmd, args \\ []) when is_name(pid) and is_binary(cmd) and is_list(args) do
-    msg = Message.construct(cmd, args)
-    cast_message(pid, msg)
+  def cast_command(session, path, args \\ []) do
+    msg = Message.construct(path, args)
+    cast_message(session, msg)
   end
 
   @impl true
-  def init(client) when is_name(client) do
+  def init(client) do
     GenStage.async_subscribe(self(), to: client)
     {:consumer, %State{client: client}}
   end
