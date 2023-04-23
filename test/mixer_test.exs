@@ -9,13 +9,7 @@ defmodule X32Remote.MixerTest do
   defp start do
     server = start_link_supervised!(MockServer)
     port = MockServer.port(server)
-
-    super_spec = %{
-      id: X32Remote.Supervisor,
-      start: {X32Remote.Supervisor, :start_link, [{127, 0, 0, 1}, port]}
-    }
-
-    supervisor = start_link_supervised!(super_spec)
+    supervisor = start_link_supervised!({X32Remote.Supervisor, ip: {127, 0, 0, 1}, port: port})
     {:ok, server, supervisor}
   end
 

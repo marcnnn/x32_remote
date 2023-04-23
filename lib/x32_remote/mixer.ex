@@ -1,5 +1,5 @@
 defmodule X32Remote.Mixer do
-  @session X32Remote.Supervisor.Session
+  @session __MODULE__.Session
 
   [
     X32Remote.Commands.Mix,

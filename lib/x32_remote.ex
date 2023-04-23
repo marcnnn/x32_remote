@@ -10,7 +10,7 @@ defmodule X32Remote do
       port = get_port(args)
 
       Logger.info("X32Remote starting, using mixer at #{format_ip(ip)}:#{port}.")
-      X32Remote.Supervisor.start_link(ip, port)
+      X32Remote.Supervisor.start_link(ip: ip, port: port)
     else
       Supervisor.start_link([], strategy: :one_for_one)
     end
