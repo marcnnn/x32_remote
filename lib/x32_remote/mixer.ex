@@ -2,7 +2,8 @@ defmodule X32Remote.Mixer do
   @session __MODULE__.Session
 
   [
-    X32Remote.Commands.Mix,
+    X32Remote.Commands.Mixing,
+    X32Remote.Commands.MainOut,
     X32Remote.Commands.Solo,
     X32Remote.Commands.Info,
     X32Remote.Commands.Setup

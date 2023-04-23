@@ -1,4 +1,4 @@
-defmodule X32Remote.Commands.Mix do
+defmodule X32Remote.Commands.Mixing do
   @moduledoc """
   Commands that query or modify how channels are mixed.
 
@@ -24,11 +24,11 @@ defmodule X32Remote.Commands.Mix do
 
   ## Example
 
-      iex> X32Remote.Commands.Mix.muted?(session, "ch/05")
+      iex> X32Remote.Commands.Mixing.muted?(session, "ch/05")
       false
-      iex> X32Remote.Commands.Mix.mute(session, "ch/05")
+      iex> X32Remote.Commands.Mixing.mute(session, "ch/05")
       :ok
-      iex> X32Remote.Commands.Mix.muted?(session, "ch/05")
+      iex> X32Remote.Commands.Mixing.muted?(session, "ch/05")
       true
   """
   def muted?(pid, channel) do
@@ -50,9 +50,9 @@ defmodule X32Remote.Commands.Mix do
 
   ## Example
 
-      iex> X32Remote.Commands.Mix.mute(session, "ch/06")
+      iex> X32Remote.Commands.Mixing.mute(session, "ch/06")
       :ok
-      iex> X32Remote.Commands.Mix.muted?(session, "ch/06")
+      iex> X32Remote.Commands.Mixing.muted?(session, "ch/06")
       true
   """
   def mute(pid, channel) do
@@ -71,9 +71,9 @@ defmodule X32Remote.Commands.Mix do
 
   ## Example
 
-      iex> X32Remote.Commands.Mix.unmute(session, "ch/07")
+      iex> X32Remote.Commands.Mixing.unmute(session, "ch/07")
       :ok
-      iex> X32Remote.Commands.Mix.muted?(session, "ch/07")
+      iex> X32Remote.Commands.Mixing.muted?(session, "ch/07")
       false
   """
   def unmute(pid, channel) do
@@ -95,7 +95,7 @@ defmodule X32Remote.Commands.Mix do
 
   ## Example
 
-      iex> X32Remote.Commands.Mix.get_fader(session, "ch/17")
+      iex> X32Remote.Commands.Mixing.get_fader(session, "ch/17")
       0.7497556209564209
   """
   def get_fader(pid, channel) do
@@ -118,9 +118,9 @@ defmodule X32Remote.Commands.Mix do
 
   ## Example
 
-      iex> X32Remote.Commands.Mix.set_fader(session, "ch/18", 0.5)
+      iex> X32Remote.Commands.Mixing.set_fader(session, "ch/18", 0.5)
       :ok
-      iex> X32Remote.Commands.Mix.get_fader(session, "ch/18")
+      iex> X32Remote.Commands.Mixing.get_fader(session, "ch/18")
       0.4995112419128418
   """
   def set_fader(pid, channel, volume) when is_volume(volume) do
@@ -140,7 +140,7 @@ defmodule X32Remote.Commands.Mix do
 
   ## Example
 
-      iex> X32Remote.Commands.Mix.get_panning(session, "ch/19")
+      iex> X32Remote.Commands.Mixing.get_panning(session, "ch/19")
       0.5
   """
   def get_panning(pid, channel) do
@@ -162,53 +162,13 @@ defmodule X32Remote.Commands.Mix do
 
   ## Example
 
-      iex> X32Remote.Commands.Mix.set_panning(session, "ch/20", 20)  # or 0.2
+      iex> X32Remote.Commands.Mixing.set_panning(session, "ch/20", 20)  # or 0.2
       :ok
-      iex> X32Remote.Commands.Mix.get_panning(session, "ch/20")
+      iex> X32Remote.Commands.Mixing.get_panning(session, "ch/20")
       0.20000000298023224
   """
   def set_panning(pid, channel, value) when is_percent(value) do
     ensure_channel(channel)
     Session.cast_command(pid, "/#{channel}/mix/pan", [value])
-  end
-
-  def main_stereo_out?(pid, channel) do
-    ensure_channel(channel)
-    Session.call_command(pid, "/#{channel}/mix/st", []) |> to_boolean()
-  end
-
-  def enable_main_stereo_out(pid, channel) do
-    ensure_channel(channel)
-    Session.cast_command(pid, "/#{channel}/mix/st", [1])
-  end
-
-  def disable_main_stereo_out(pid, channel) do
-    ensure_channel(channel)
-    Session.cast_command(pid, "/#{channel}/mix/st", [0])
-  end
-
-  def main_mono_out?(pid, channel) do
-    ensure_channel(channel)
-    Session.call_command(pid, "/#{channel}/mix/mono", []) |> to_boolean()
-  end
-
-  def enable_main_mono_out(pid, channel) do
-    ensure_channel(channel)
-    Session.cast_command(pid, "/#{channel}/mix/mono", [1])
-  end
-
-  def disable_main_mono_out(pid, channel) do
-    ensure_channel(channel)
-    Session.cast_command(pid, "/#{channel}/mix/mono", [0])
-  end
-
-  def get_main_mono_level(pid, channel) do
-    ensure_channel(channel)
-    Session.call_command(pid, "/#{channel}/mix/mlevel", []) |> to_float()
-  end
-
-  def set_main_mono_level(pid, channel, level) when is_mono_level(level) do
-    ensure_channel(channel)
-    Session.cast_command(pid, "/#{channel}/mix/mlevel", [level])
   end
 end
