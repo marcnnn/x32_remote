@@ -1,34 +1,96 @@
 defmodule X32Remote.Types do
-  defguard is_name(n) when is_pid(n) or is_atom(n)
+  @moduledoc """
+  Guards and functions relating to X32 argument and return types.
+  """
 
+  @doc """
+  An X32 slider, represented as either a number between `0` and `max` inclusive, or a floating point between `0.0` and `1.0` inclusive.
+  """
   defguard is_slider(v, max)
            when (is_float(v) and v >= 0.0 and v <= 1.0) or
                   (is_integer(v) and v >= 0 and v <= max)
 
+  @doc """
+  An X32 fader volume slider.  See `is_slider/2`, with a `max` of `1023`.
+  """
   defguard is_volume(v) when is_slider(v, 1023)
+
+  @doc """
+  An X32 mono volume slider.  See `is_slider/2`, with a `max` of `160`.
+  """
   defguard is_mono_level(v) when is_slider(v, 160)
+
+  @doc """
+  An X32 percentage, used in e.g. channel panning.  See `is_slider/2` with a `max` of `100`.
+  """
   defguard is_percent(v) when is_slider(v, 100)
 
+  @doc """
+  Converts an X32 arguments list, containing a single `1` or `0` argument, to
+  `true` or `false` respectively.
+  """
+  @spec to_boolean([0..1]) :: boolean
   def to_boolean([0]), do: false
   def to_boolean([1]), do: true
 
+  @doc """
+  Converts an X32 arguments list, containing a single floating point argument,
+  to a regular floating point.
+
+  Convenience function that can both validate and convert the result as part of
+  a `|>` pipeline.
+  """
+  @spec to_float([float]) :: float
   def to_float([f]) when is_float(f), do: f
 
   defmodule Channels do
-    def channel?("ch/" <> id), do: check_twodigit(id, 1..32)
+    @moduledoc """
+    Guards and functions specifically for channel names, in `type/##` format.
+    """
+
+    @doc """
+    Checks if a string refers to a valid channel name.
+
+    The following names are considered valid:
+
+    * `ch/01` through `ch/32`
+    * `auxin/01` through `auxin/08`
+    * `fxrtn/01` through `fxrtn/08`
+    * `bus/01` through `bus/16`
+    * `mtx/01` through `mtx/06`
+    * `main/st` and `main/m`
+    """
+    @spec channel?(binary) :: boolean
+    def channel?("ch/" <> id = _ch), do: check_twodigit(id, 1..32)
     def channel?("auxin/" <> id), do: check_twodigit(id, 1..8)
     def channel?("fxrtn/" <> id), do: check_twodigit(id, 1..8)
     def channel?("bus/" <> id), do: check_twodigit(id, 1..16)
     def channel?("mtx/" <> id), do: check_twodigit(id, 1..6)
     def channel?("main/st"), do: true
     def channel?("main/m"), do: true
-    def channel?(_), do: false
+    def channel?(_ch), do: false
 
-    # Yes I know String.to_integer/1 is a thing, but this is a fast
-    # and simple way to ensure we get a two-digit zero-padded integer.
+    @typedoc "A one- or two-digit integer."
+    @type twodigit_integer :: 0..99
+    @typedoc "A one- or two-digit integer, as a two-character zero-padded string."
+    @type twodigit_binary :: <<_::16>>
+
+    @doc """
+    Converts a two-character string into a one- or two-digit integer.
+
+    Faster than `String.to_integer/1` for this specific case.
+    """
     @digits ?0..?9
-    def from_twodigit(<<t, n>>) when t in @digits and n in @digits, do: (t - ?0) * 10 + n - ?0
+    @spec from_twodigit(twodigit_binary) :: twodigit_integer
+    def from_twodigit(<<t, n>> = _s) when t in @digits and n in @digits,
+      do: (t - ?0) * 10 + n - ?0
 
+    @doc """
+    Converts a one- or two-digit integer into a two-character zero-padded string.
+
+    Faster than `Integer.to_string/1` + `String.pad_leading/3`.
+    """
+    @spec to_twodigit(twodigit_integer) :: twodigit_binary
     def to_twodigit(n) when n >= 0 and n <= 9, do: "0#{n}"
     def to_twodigit(n) when n >= 10 and n <= 99, do: "#{n}"
 
@@ -40,9 +102,20 @@ defmodule X32Remote.Types do
       end
     end
 
+    @doc """
+    Runtime assertion to ensure that a channel name is valid.
+
+    Returns `ch` if `channel?/1` returns true.  Raises `ArgumentError` otherwise.
+
+    This could technically be a guard, but the guard version was extremely
+    verbose on error, and about 2.8x slower besides.
+    """
+    @spec ensure_channel(binary) :: binary
     def ensure_channel(ch) do
-      unless channel?(ch) do
-        raise "Invalid channel specifier: #{inspect(ch)}"
+      if channel?(ch) do
+        ch
+      else
+        raise ArgumentError, "Invalid channel specifier: #{inspect(ch)}"
       end
     end
   end
