@@ -38,6 +38,12 @@ defmodule X32Remote.Commands.SoloTest do
     assert MockClient.next_request(client) == %Message{path: "/-stat/solosw/55", args: [1]}
     assert :ok = Solo.enable_solo(session, "mtx/02")
     assert MockClient.next_request(client) == %Message{path: "/-stat/solosw/66", args: [1]}
+    assert :ok = Solo.enable_solo(session, "main/st")
+    assert MockClient.next_request(client) == %Message{path: "/-stat/solosw/71", args: [1]}
+    assert :ok = Solo.enable_solo(session, "main/m")
+    assert MockClient.next_request(client) == %Message{path: "/-stat/solosw/72", args: [1]}
+    assert :ok = Solo.enable_solo(session, "dca/03")
+    assert MockClient.next_request(client) == %Message{path: "/-stat/solosw/75", args: [1]}
   end
 
   test "any_solo?/1 returns true if stat/solo is 1" do

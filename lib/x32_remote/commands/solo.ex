@@ -4,12 +4,25 @@ defmodule X32Remote.Commands.Solo do
   import X32Remote.Types
   import X32Remote.Types.Channels
 
+  # Unlike most commands that specify a channel, we need to use special ID
+  # numbers to specify solo devices.  From the unofficial API document:
+  #
+  #    01-32: Ch 01-32
+  #    33-40: Auxin 1-8
+  #    41-48: FxRtn 1-8
+  #    49-64: Bus master 01-16
+  #    65-70: Matrix 1-6
+  #    71:    L/R
+  #    72:    Mono/Center
+  #    73-80: DCA 1-8
+  #
   @solo_ids [
               ch: 1..32,
               auxin: 33..40,
               fxrtn: 41..48,
               bus: 49..64,
-              mtx: 65..70
+              mtx: 65..70,
+              dca: 73..80
             ]
             |> Enum.flat_map(fn {prefix, range} ->
               range
@@ -21,6 +34,10 @@ defmodule X32Remote.Commands.Solo do
               end)
             end)
             |> Map.new()
+            |> Map.merge(%{
+              "main/st" => 71,
+              "main/m" => 72
+            })
 
   def solo?(pid, channel) do
     id = Map.fetch!(@solo_ids, channel)
