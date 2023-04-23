@@ -20,7 +20,7 @@ defmodule X32Remote do
   If you know the IP address of your X32 mixer at compile time, you can set it
   in your `config/config.exs`.  Alternatively, if you need to perform some
   lookup at runtime in order to find your mixer, you can set it in your
-  `config/runtime.exs`.  Either way, the syntax is the same.
+  `config/runtime.exs`.  Either way, the syntax is the same:
 
       # port is optional:
       config :x32_remote, ip: {192, 168, 2, 3}, port: 10023

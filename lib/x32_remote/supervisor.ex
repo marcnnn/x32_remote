@@ -2,10 +2,10 @@ defmodule X32Remote.Supervisor do
   @moduledoc """
   A supervisor that starts a named `ExOSC.Client`, and an `X32Remote.Session` subscribed to it.
 
-  Normally, this is used by `X32Remote.start/2` to create the session that will
-  be used by `X32Remote.Mixer`.  However, you can also use this in your own
-  code, either to start that instance manually, or to conveniently start a
-  supervised client + session pair.
+  Normally, this is used by `X32Remote` to create the session that will be used
+  by `X32Remote.Mixer`.  However, you can also use this in your own code,
+  either to start that instance manually, or to conveniently start a supervised
+  client + session pair.
   """
 
   @default_supervisor_name X32Remote.Mixer.Supervisor

@@ -16,7 +16,7 @@ defmodule X32Remote.Session do
   `X32Remote.Mixer` provides a ready-to-use version of the X32 command set,
   suitable for use if your program only needs to talk to a single mixer.  If
   you need to talk to multiple mixers simultaneously, you can still use the
-  `X32Remote.Commands` modules to use the X32 command set.  Using the call/cast
+  `X32Remote.Commands.*` modules to use the X32 command set.  Using the call/cast
   functions directly can be useful for commands that this library does not
   (yet) support, however.
 
