@@ -1,4 +1,13 @@
 defmodule X32Remote.Commands.Solo do
+  @moduledoc """
+  Commands that query or modify the solo state of the mixer.
+
+  In addition to the channel names accepted by `X32Remote.Types.Channels`,
+  these commands also accept `dca/01` through `dca/08` to listen to DCA groups.
+
+  #{X32Remote.Commands.shared_moduledoc()}
+  """
+
   alias X32Remote.Session
 
   import X32Remote.Types
@@ -39,25 +48,85 @@ defmodule X32Remote.Commands.Solo do
               "main/m" => 72
             })
 
+  @doc """
+  Query if solo is enabled for the given channel.
+
+  ## Example
+
+      iex> X32Remote.Commands.Solo.solo?(session, "ch/05")
+      false
+      iex> X32Remote.Commands.Solo.enable_solo(session, "ch/05")
+      :ok
+      iex> X32Remote.Commands.Solo.solo?(session, "ch/05")
+      true
+  """
   def solo?(pid, channel) do
     id = Map.fetch!(@solo_ids, channel)
     Session.call_command(pid, "/-stat/solosw/#{id}", []) |> to_boolean()
   end
 
+  @doc """
+  Enables solo for the given channel.
+
+  ## Example
+
+      iex> X32Remote.Commands.Solo.enable_solo(session, "ch/06")
+      :ok
+      iex> X32Remote.Commands.Solo.solo?(session, "ch/06")
+      true
+  """
   def enable_solo(pid, channel) do
     id = Map.fetch!(@solo_ids, channel)
     Session.cast_command(pid, "/-stat/solosw/#{id}", [1])
   end
 
+  @doc """
+  Disables solo for the given channel.
+
+  ## Example
+
+      iex> X32Remote.Commands.Solo.disable_solo(session, "ch/07")
+      :ok
+      iex> X32Remote.Commands.Solo.solo?(session, "ch/07")
+      false
+  """
   def disable_solo(pid, channel) do
     id = Map.fetch!(@solo_ids, channel)
     Session.cast_command(pid, "/-stat/solosw/#{id}", [0])
   end
 
+  @doc """
+  Checks if solo is enabled for **any** channel.
+
+  This also corresponds to whether the "Clear Solo" button is flashing on the X32 console.
+
+  ## Example
+
+      iex> X32Remote.Commands.Solo.enable_solo(session, "ch/08")
+      :ok
+      iex> X32Remote.Commands.Solo.any_solo?(session)
+      true
+      iex> X32Remote.Commands.Solo.clear_solo(session)
+      :ok
+      iex> X32Remote.Commands.Solo.any_solo?(session)
+      false
+  """
   def any_solo?(pid) do
     Session.call_command(pid, "/-stat/solo", []) |> to_boolean()
   end
 
+  @doc """
+  Disables solo for **all** channels.
+
+  This is the same as pressing the "Clear Solo" button on the X32 console.
+
+  ## Example
+
+      iex> X32Remote.Commands.Solo.clear_solo(session)
+      :ok
+      iex> X32Remote.Commands.Solo.any_solo?(session)
+      false
+  """
   def clear_solo(pid) do
     Session.cast_command(pid, "/-action/clearsolo", [1])
   end

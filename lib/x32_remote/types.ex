@@ -46,10 +46,8 @@ defmodule X32Remote.Types do
   defmodule Channels do
     @moduledoc """
     Guards and functions specifically for channel names, in `type/##` format.
-    """
 
-    @doc """
-    Checks if a string refers to a valid channel name.
+    ## Valid channels
 
     The following names are considered valid:
 
@@ -59,6 +57,15 @@ defmodule X32Remote.Types do
     * `bus/01` through `bus/16`
     * `mtx/01` through `mtx/06`
     * `main/st` and `main/m`
+
+    All single-digit numbers **must** be zero-padded.  E.g. `ch/05` is a valid
+    channel, `ch/5` is not.
+    """
+
+    @doc """
+    Checks if a string refers to a valid channel name.
+
+    Returns true if valid, false otherwise.
     """
     @spec channel?(binary) :: boolean
     def channel?("ch/" <> id = _ch), do: check_twodigit(id, 1..32)
@@ -105,7 +112,7 @@ defmodule X32Remote.Types do
     @doc """
     Runtime assertion to ensure that a channel name is valid.
 
-    Returns `ch` if `channel?/1` returns true.  Raises `ArgumentError` otherwise.
+    Returns `ch` if `channel?/1` returns `true`.  Raises `ArgumentError` otherwise.
 
     This could technically be a guard, but the guard version was extremely
     verbose on error, and about 2.8x slower besides.
