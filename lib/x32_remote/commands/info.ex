@@ -1,9 +1,9 @@
 defmodule X32Remote.Commands.Info do
   @moduledoc """
   Commands that fetch basic information from an X32 device.
-
-  #{X32Remote.Commands.shared_moduledoc()}
   """
+
+  use X32Remote.Commands
 
   alias X32Remote.Session
 
@@ -22,7 +22,7 @@ defmodule X32Remote.Commands.Info do
       iex> X32Remote.Commands.Info.info(session)
       ["V2.07", "osc-server", "X32RACK", "4.06-8"]
   """
-  def info(session), do: Session.call_command(session, "/info", [])
+  defcommand(info(session), do: Session.call_command(session, "/info", []))
 
   @doc """
   Query info about the console and network setup.
@@ -39,7 +39,7 @@ defmodule X32Remote.Commands.Info do
       iex> X32Remote.Commands.Info.xinfo(session)
       ["192.168.4.5", "My Mixer", "X32RACK", "4.06-8"]
   """
-  def xinfo(session), do: Session.call_command(session, "/xinfo", [])
+  defcommand(xinfo(session), do: Session.call_command(session, "/xinfo", []))
 
   @doc """
   Query info about the console's state and network setup.
@@ -55,5 +55,5 @@ defmodule X32Remote.Commands.Info do
       iex> X32Remote.Commands.Info.status(session)
       ["active", "192.168.4.5", "My Mixer"]
   """
-  def status(session), do: Session.call_command(session, "/status", [])
+  defcommand(status(session), do: Session.call_command(session, "/status", []))
 end

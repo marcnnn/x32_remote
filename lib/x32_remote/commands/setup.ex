@@ -1,9 +1,9 @@
 defmodule X32Remote.Commands.Setup do
   @moduledoc """
   Commands that query or modify the X32 device's configuration.
-
-  #{X32Remote.Commands.shared_moduledoc()}
   """
+
+  use X32Remote.Commands
 
   alias X32Remote.Session
 
@@ -24,7 +24,7 @@ defmodule X32Remote.Commands.Setup do
       iex> X32Remote.Commands.Setup.set_clock(session, ndt)
       :ok
   """
-  def set_clock(session, %NaiveDateTime{} = ndt) do
+  defcommand set_clock(session, %NaiveDateTime{} = ndt) do
     Session.cast_command(session, "/-action/setclock", [ndt |> Calendar.strftime("%Y%m%d%H%M%S")])
   end
 end

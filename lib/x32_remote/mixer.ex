@@ -22,6 +22,8 @@ defmodule X32Remote.Mixer do
       0.5
   """
 
+  require X32Remote.Mixer.Builder
+
   [
     X32Remote.Commands.Mixing,
     X32Remote.Commands.MainOut,
@@ -30,23 +32,10 @@ defmodule X32Remote.Mixer do
     X32Remote.Commands.Setup
   ]
   |> Enum.flat_map(fn module ->
-    module.__info__(:functions)
-    |> Enum.map(fn {name, arity} -> {module, name, arity} end)
+    module.__commands__()
+    |> Enum.map(fn {fname, args, summary} -> {module, fname, args, summary} end)
   end)
-  |> Enum.each(fn
-    {module, name, 1} ->
-      @doc "See `#{inspect(module)}.#{name}/1`."
-      def unquote(name)(),
-        do: unquote(module).unquote(name)(@session)
-
-    {module, name, 2} ->
-      @doc "See `#{inspect(module)}.#{name}/2`."
-      def unquote(name)(arg2),
-        do: unquote(module).unquote(name)(@session, arg2)
-
-    {module, name, 3} ->
-      @doc "See `#{inspect(module)}.#{name}/3`."
-      def unquote(name)(arg2, arg3),
-        do: unquote(module).unquote(name)(@session, arg2, arg3)
+  |> Enum.each(fn {module, fname, args, summary} ->
+    X32Remote.Mixer.Builder.defcurried(module, fname, args, summary, session: @session)
   end)
 end

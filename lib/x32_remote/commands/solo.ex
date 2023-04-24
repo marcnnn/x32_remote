@@ -4,12 +4,11 @@ defmodule X32Remote.Commands.Solo do
 
   In addition to the channel names accepted by `X32Remote.Types.Channels`,
   these commands also accept `dca/01` through `dca/08` to listen to DCA groups.
-
-  #{X32Remote.Commands.shared_moduledoc()}
   """
 
-  alias X32Remote.Session
+  use X32Remote.Commands
 
+  alias X32Remote.Session
   import X32Remote.Types
   import X32Remote.Types.Channels
 
@@ -60,7 +59,7 @@ defmodule X32Remote.Commands.Solo do
       iex> X32Remote.Commands.Solo.solo?(session, "ch/05")
       true
   """
-  def solo?(session, channel) do
+  defcommand solo?(session, channel) do
     id = Map.fetch!(@solo_ids, channel)
     Session.call_command(session, "/-stat/solosw/#{id}", []) |> to_boolean()
   end
@@ -75,7 +74,7 @@ defmodule X32Remote.Commands.Solo do
       iex> X32Remote.Commands.Solo.solo?(session, "ch/06")
       true
   """
-  def enable_solo(session, channel) do
+  defcommand enable_solo(session, channel) do
     id = Map.fetch!(@solo_ids, channel)
     Session.cast_command(session, "/-stat/solosw/#{id}", [1])
   end
@@ -90,7 +89,7 @@ defmodule X32Remote.Commands.Solo do
       iex> X32Remote.Commands.Solo.solo?(session, "ch/07")
       false
   """
-  def disable_solo(session, channel) do
+  defcommand disable_solo(session, channel) do
     id = Map.fetch!(@solo_ids, channel)
     Session.cast_command(session, "/-stat/solosw/#{id}", [0])
   end
@@ -111,7 +110,7 @@ defmodule X32Remote.Commands.Solo do
       iex> X32Remote.Commands.Solo.any_solo?(session)
       false
   """
-  def any_solo?(session) do
+  defcommand any_solo?(session) do
     Session.call_command(session, "/-stat/solo", []) |> to_boolean()
   end
 
@@ -127,7 +126,7 @@ defmodule X32Remote.Commands.Solo do
       iex> X32Remote.Commands.Solo.any_solo?(session)
       false
   """
-  def clear_solo(session) do
+  defcommand clear_solo(session) do
     Session.cast_command(session, "/-action/clearsolo", [1])
   end
 end
