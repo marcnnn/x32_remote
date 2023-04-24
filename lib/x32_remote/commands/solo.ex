@@ -60,9 +60,9 @@ defmodule X32Remote.Commands.Solo do
       iex> X32Remote.Commands.Solo.solo?(session, "ch/05")
       true
   """
-  def solo?(pid, channel) do
+  def solo?(session, channel) do
     id = Map.fetch!(@solo_ids, channel)
-    Session.call_command(pid, "/-stat/solosw/#{id}", []) |> to_boolean()
+    Session.call_command(session, "/-stat/solosw/#{id}", []) |> to_boolean()
   end
 
   @doc """
@@ -75,9 +75,9 @@ defmodule X32Remote.Commands.Solo do
       iex> X32Remote.Commands.Solo.solo?(session, "ch/06")
       true
   """
-  def enable_solo(pid, channel) do
+  def enable_solo(session, channel) do
     id = Map.fetch!(@solo_ids, channel)
-    Session.cast_command(pid, "/-stat/solosw/#{id}", [1])
+    Session.cast_command(session, "/-stat/solosw/#{id}", [1])
   end
 
   @doc """
@@ -90,9 +90,9 @@ defmodule X32Remote.Commands.Solo do
       iex> X32Remote.Commands.Solo.solo?(session, "ch/07")
       false
   """
-  def disable_solo(pid, channel) do
+  def disable_solo(session, channel) do
     id = Map.fetch!(@solo_ids, channel)
-    Session.cast_command(pid, "/-stat/solosw/#{id}", [0])
+    Session.cast_command(session, "/-stat/solosw/#{id}", [0])
   end
 
   @doc """
@@ -111,8 +111,8 @@ defmodule X32Remote.Commands.Solo do
       iex> X32Remote.Commands.Solo.any_solo?(session)
       false
   """
-  def any_solo?(pid) do
-    Session.call_command(pid, "/-stat/solo", []) |> to_boolean()
+  def any_solo?(session) do
+    Session.call_command(session, "/-stat/solo", []) |> to_boolean()
   end
 
   @doc """
@@ -127,7 +127,7 @@ defmodule X32Remote.Commands.Solo do
       iex> X32Remote.Commands.Solo.any_solo?(session)
       false
   """
-  def clear_solo(pid) do
-    Session.cast_command(pid, "/-action/clearsolo", [1])
+  def clear_solo(session) do
+    Session.cast_command(session, "/-action/clearsolo", [1])
   end
 end

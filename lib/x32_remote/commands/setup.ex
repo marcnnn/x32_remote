@@ -24,7 +24,7 @@ defmodule X32Remote.Commands.Setup do
       iex> X32Remote.Commands.Setup.set_clock(session, ndt)
       :ok
   """
-  def set_clock(pid, %NaiveDateTime{} = ndt) do
-    Session.cast_command(pid, "/-action/setclock", [ndt |> Calendar.strftime("%Y%m%d%H%M%S")])
+  def set_clock(session, %NaiveDateTime{} = ndt) do
+    Session.cast_command(session, "/-action/setclock", [ndt |> Calendar.strftime("%Y%m%d%H%M%S")])
   end
 end

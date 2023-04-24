@@ -31,10 +31,10 @@ defmodule X32Remote.Commands.Mixing do
       iex> X32Remote.Commands.Mixing.muted?(session, "ch/05")
       true
   """
-  def muted?(pid, channel) do
+  def muted?(session, channel) do
     ensure_channel(channel)
 
-    Session.call_command(pid, "/#{channel}/mix/on", [])
+    Session.call_command(session, "/#{channel}/mix/on", [])
     |> to_boolean()
     |> Kernel.not()
   end
@@ -55,9 +55,9 @@ defmodule X32Remote.Commands.Mixing do
       iex> X32Remote.Commands.Mixing.muted?(session, "ch/06")
       true
   """
-  def mute(pid, channel) do
+  def mute(session, channel) do
     ensure_channel(channel)
-    Session.cast_command(pid, "/#{channel}/mix/on", [0])
+    Session.cast_command(session, "/#{channel}/mix/on", [0])
   end
 
   @doc """
@@ -76,9 +76,9 @@ defmodule X32Remote.Commands.Mixing do
       iex> X32Remote.Commands.Mixing.muted?(session, "ch/07")
       false
   """
-  def unmute(pid, channel) do
+  def unmute(session, channel) do
     ensure_channel(channel)
-    Session.cast_command(pid, "/#{channel}/mix/on", [1])
+    Session.cast_command(session, "/#{channel}/mix/on", [1])
   end
 
   @doc """
@@ -98,9 +98,9 @@ defmodule X32Remote.Commands.Mixing do
       iex> X32Remote.Commands.Mixing.get_fader(session, "ch/17")
       0.7497556209564209
   """
-  def get_fader(pid, channel) do
+  def get_fader(session, channel) do
     ensure_channel(channel)
-    Session.call_command(pid, "/#{channel}/mix/fader", []) |> to_float()
+    Session.call_command(session, "/#{channel}/mix/fader", []) |> to_float()
   end
 
   @doc """
@@ -123,9 +123,9 @@ defmodule X32Remote.Commands.Mixing do
       iex> X32Remote.Commands.Mixing.get_fader(session, "ch/18")
       0.4995112419128418
   """
-  def set_fader(pid, channel, volume) when is_volume(volume) do
+  def set_fader(session, channel, volume) when is_volume(volume) do
     ensure_channel(channel)
-    Session.cast_command(pid, "/#{channel}/mix/fader", [volume])
+    Session.cast_command(session, "/#{channel}/mix/fader", [volume])
   end
 
   @doc """
@@ -143,9 +143,9 @@ defmodule X32Remote.Commands.Mixing do
       iex> X32Remote.Commands.Mixing.get_panning(session, "ch/19")
       0.5
   """
-  def get_panning(pid, channel) do
+  def get_panning(session, channel) do
     ensure_channel(channel)
-    Session.call_command(pid, "/#{channel}/mix/pan", []) |> to_float()
+    Session.call_command(session, "/#{channel}/mix/pan", []) |> to_float()
   end
 
   @doc """
@@ -167,8 +167,8 @@ defmodule X32Remote.Commands.Mixing do
       iex> X32Remote.Commands.Mixing.get_panning(session, "ch/20")
       0.20000000298023224
   """
-  def set_panning(pid, channel, value) when is_percent(value) do
+  def set_panning(session, channel, value) when is_percent(value) do
     ensure_channel(channel)
-    Session.cast_command(pid, "/#{channel}/mix/pan", [value])
+    Session.cast_command(session, "/#{channel}/mix/pan", [value])
   end
 end

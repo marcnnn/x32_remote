@@ -27,9 +27,9 @@ defmodule X32Remote.Commands.MainOut do
       iex> X32Remote.Commands.MainOut.main_stereo_out?(session, "bus/03")
       true
   """
-  def main_stereo_out?(pid, channel) do
+  def main_stereo_out?(session, channel) do
     ensure_channel(channel)
-    Session.call_command(pid, "/#{channel}/mix/st", []) |> to_boolean()
+    Session.call_command(session, "/#{channel}/mix/st", []) |> to_boolean()
   end
 
   @doc """
@@ -45,9 +45,9 @@ defmodule X32Remote.Commands.MainOut do
       iex> X32Remote.Commands.MainOut.main_stereo_out?(session, "bus/05")
       true
   """
-  def enable_main_stereo_out(pid, channel) do
+  def enable_main_stereo_out(session, channel) do
     ensure_channel(channel)
-    Session.cast_command(pid, "/#{channel}/mix/st", [1])
+    Session.cast_command(session, "/#{channel}/mix/st", [1])
   end
 
   @doc """
@@ -63,9 +63,9 @@ defmodule X32Remote.Commands.MainOut do
       iex> X32Remote.Commands.MainOut.main_stereo_out?(session, "bus/06")
       false
   """
-  def disable_main_stereo_out(pid, channel) do
+  def disable_main_stereo_out(session, channel) do
     ensure_channel(channel)
-    Session.cast_command(pid, "/#{channel}/mix/st", [0])
+    Session.cast_command(session, "/#{channel}/mix/st", [0])
   end
 
   @doc """
@@ -82,9 +82,9 @@ defmodule X32Remote.Commands.MainOut do
       iex> X32Remote.Commands.MainOut.main_mono_out?(session, "ch/03")
       true
   """
-  def main_mono_out?(pid, channel) do
+  def main_mono_out?(session, channel) do
     ensure_channel(channel)
-    Session.call_command(pid, "/#{channel}/mix/mono", []) |> to_boolean()
+    Session.call_command(session, "/#{channel}/mix/mono", []) |> to_boolean()
   end
 
   @doc """
@@ -100,9 +100,9 @@ defmodule X32Remote.Commands.MainOut do
       iex> X32Remote.Commands.MainOut.main_mono_out?(session, "ch/06")
       true
   """
-  def enable_main_mono_out(pid, channel) do
+  def enable_main_mono_out(session, channel) do
     ensure_channel(channel)
-    Session.cast_command(pid, "/#{channel}/mix/mono", [1])
+    Session.cast_command(session, "/#{channel}/mix/mono", [1])
   end
 
   @doc """
@@ -118,9 +118,9 @@ defmodule X32Remote.Commands.MainOut do
       iex> X32Remote.Commands.MainOut.main_mono_out?(session, "ch/09")
       false
   """
-  def disable_main_mono_out(pid, channel) do
+  def disable_main_mono_out(session, channel) do
     ensure_channel(channel)
-    Session.cast_command(pid, "/#{channel}/mix/mono", [0])
+    Session.cast_command(session, "/#{channel}/mix/mono", [0])
   end
 
   @doc """
@@ -138,9 +138,9 @@ defmodule X32Remote.Commands.MainOut do
       iex> X32Remote.Commands.MainOut.get_main_mono_level(session, "ch/17")
       0.5625
   """
-  def get_main_mono_level(pid, channel) do
+  def get_main_mono_level(session, channel) do
     ensure_channel(channel)
-    Session.call_command(pid, "/#{channel}/mix/mlevel", []) |> to_float()
+    Session.call_command(session, "/#{channel}/mix/mlevel", []) |> to_float()
   end
 
   @doc """
@@ -161,8 +161,8 @@ defmodule X32Remote.Commands.MainOut do
       iex> X32Remote.Commands.MainOut.get_main_mono_level(session, "ch/18")
       0.1875
   """
-  def set_main_mono_level(pid, channel, level) when is_mono_level(level) do
+  def set_main_mono_level(session, channel, level) when is_mono_level(level) do
     ensure_channel(channel)
-    Session.cast_command(pid, "/#{channel}/mix/mlevel", [level])
+    Session.cast_command(session, "/#{channel}/mix/mlevel", [level])
   end
 end
