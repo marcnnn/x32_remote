@@ -5,8 +5,6 @@ defmodule X32Remote.Commands.Setup do
 
   use X32Remote.Commands
 
-  alias X32Remote.Session
-
   @doc """
   Sets the console's clock, as displayed on the mixer's LCD panel.
 

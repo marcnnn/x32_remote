@@ -14,6 +14,11 @@ defmodule X32Remote.Commands do
       require X32Remote.Commands
       import X32Remote.Commands, only: [defcommand: 2]
 
+      alias X32Remote.Session
+
+      import X32Remote.Types
+      import X32Remote.Types.Channel
+
       Module.register_attribute(__MODULE__, :commands, accumulate: true)
 
       @before_compile X32Remote.Commands

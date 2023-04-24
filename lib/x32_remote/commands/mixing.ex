@@ -8,10 +8,6 @@ defmodule X32Remote.Commands.Mixing do
 
   use X32Remote.Commands
 
-  alias X32Remote.Session
-
-  import X32Remote.Types
-  import X32Remote.Types.Channel
 
   @doc """
   Query if a channel is muted.

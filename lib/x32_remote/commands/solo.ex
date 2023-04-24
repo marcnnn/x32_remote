@@ -8,10 +8,6 @@ defmodule X32Remote.Commands.Solo do
 
   use X32Remote.Commands
 
-  alias X32Remote.Session
-  import X32Remote.Types
-  import X32Remote.Types.Channel
-
   # Unlike most commands that specify a channel, we need to use special ID
   # numbers to specify solo devices.  From the unofficial API document:
   #
