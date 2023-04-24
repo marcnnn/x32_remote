@@ -1,6 +1,8 @@
 defmodule X32Remote.MixProject do
   use Mix.Project
 
+  @github_url "https://github.com/wisq/x32_remote"
+
   def project do
     [
       app: :x32_remote,
@@ -8,7 +10,11 @@ defmodule X32Remote.MixProject do
       elixir: "~> 1.14",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      description: description(),
+      package: package(),
+      docs: docs(),
+      deps: deps(),
+      source_url: @github_url
     ]
   end
 
@@ -23,6 +29,35 @@ defmodule X32Remote.MixProject do
   # Specifies which paths to compile per environment.
   defp elixirc_paths(:test), do: ["lib", "test/support"]
   defp elixirc_paths(_), do: ["lib"]
+
+  defp description do
+    """
+    X32Remote is a library for controlling Behringer X32 and M32 mixing consoles.
+    """
+  end
+
+  defp package do
+    [
+      files: ["lib", "mix.exs", "README.md", "CHANGELOG.md", "LICENSE"],
+      maintainers: ["Adrian Irving-Beer"],
+      licenses: ["MIT"],
+      links: %{GitHub: @github_url}
+    ]
+  end
+
+  defp docs do
+    [
+      main: "readme",
+      extras: [
+        "README.md",
+        "CHANGELOG.md"
+      ],
+      groups_for_modules: [
+        Commands: ~r/^X32Remote\.Commands\./,
+        Types: ~r/^X32Remote\.Types/
+      ]
+    ]
+  end
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
