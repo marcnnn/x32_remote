@@ -1,9 +1,10 @@
-defmodule X32Remote.Mixer.Builder do
+defmodule X32Remote.Builder.Mixer do
   @moduledoc false
 
   defmacro build(modules) do
     quote bind_quoted: [modules: modules] do
       require X32Remote.Commands
+      alias X32Remote.Builder
 
       modules
       |> Enum.map(& &1.__typespecs__())
@@ -19,7 +20,7 @@ defmodule X32Remote.Mixer.Builder do
         |> Enum.map(fn {fname, args, summary, spec} -> {module, fname, args, summary, spec} end)
       end)
       |> Enum.each(fn {module, fname, args, summary, spec} ->
-        X32Remote.Mixer.Builder.defcurried(module, fname, args, summary, spec, session: @session)
+        X32Remote.Builder.Mixer.defcurried(module, fname, args, summary, spec, session: @session)
       end)
     end
   end
@@ -37,20 +38,20 @@ defmodule X32Remote.Mixer.Builder do
     ) do
       defn =
         args
-        |> X32Remote.Mixer.Builder.remove_args(to_replace)
-        |> X32Remote.Mixer.Builder.to_function_call(fname)
+        |> X32Remote.Builder.Mixer.remove_args(to_replace)
+        |> X32Remote.Builder.Mixer.to_function_call(fname)
         |> Code.string_to_quoted!()
 
       body =
         args
-        |> X32Remote.Mixer.Builder.substitute_args(to_replace)
-        |> X32Remote.Mixer.Builder.to_function_call(fname, module)
+        |> X32Remote.Builder.Mixer.substitute_args(to_replace)
+        |> X32Remote.Builder.Mixer.to_function_call(fname, module)
         |> Code.string_to_quoted!()
 
-      @doc X32Remote.Mixer.Builder.document(module, fname, Enum.count(args), summary)
+      @doc X32Remote.Builder.Mixer.document(module, fname, Enum.count(args), summary)
       spec
       |> Enum.each(fn s ->
-        s = X32Remote.Mixer.Builder.substitute_spec(fname, to_replace, s)
+        s = X32Remote.Builder.Mixer.substitute_spec(fname, to_replace, s)
         @spec unquote(s)
       end)
 

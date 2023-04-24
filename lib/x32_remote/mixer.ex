@@ -22,7 +22,7 @@ defmodule X32Remote.Mixer do
       0.5
   """
 
-  require X32Remote.Mixer.Builder
+  require X32Remote.Builder.Mixer
 
   [
     X32Remote.Commands.Mixing,
@@ -31,5 +31,5 @@ defmodule X32Remote.Mixer do
     X32Remote.Commands.Info,
     X32Remote.Commands.Setup
   ]
-  |> X32Remote.Mixer.Builder.build()
+  |> X32Remote.Builder.Mixer.build()
 end
