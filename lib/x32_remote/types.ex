@@ -3,6 +3,11 @@ defmodule X32Remote.Types do
   Guards and functions relating to X32 argument and return types.
   """
 
+  @typedoc "Mono level, as integer (`0` to `160`) or float (`0.0` to `1.0`)"
+  @type mono_level :: 0..160 | float
+  @typedoc "Panning (left to right), as integer (`0` to `100`) or float (`0.0` to `1.0`)"
+  @type panning :: 0..100 | float
+
   @doc """
   An X32 slider, represented as either a number between `0` and `max` inclusive, or a floating point between `0.0` and `1.0` inclusive.
   """
@@ -21,9 +26,9 @@ defmodule X32Remote.Types do
   defguard is_mono_level(v) when is_slider(v, 160)
 
   @doc """
-  An X32 percentage, used in e.g. channel panning.  See `is_slider/2` with a `max` of `100`.
+  An X32 panning slider.  See `is_slider/2` with a `max` of `100`.
   """
-  defguard is_percent(v) when is_slider(v, 100)
+  defguard is_panning(v) when is_slider(v, 100)
 
   @doc """
   Converts an X32 arguments list, containing a single `1` or `0` argument, to
@@ -43,7 +48,7 @@ defmodule X32Remote.Types do
   @spec to_float([float]) :: float
   def to_float([f]) when is_float(f), do: f
 
-  defmodule Channels do
+  defmodule Channel do
     @moduledoc """
     Guards and functions specifically for channel names, in `type/##` format.
 
@@ -77,6 +82,8 @@ defmodule X32Remote.Types do
     def channel?("main/m"), do: true
     def channel?(_ch), do: false
 
+    @typedoc "An X32 mixer channel, in `type/##` format"
+    @type channel :: binary
     @typedoc "A one- or two-digit integer."
     @type twodigit_integer :: 0..99
     @typedoc "A one- or two-digit integer, as a two-character zero-padded string."

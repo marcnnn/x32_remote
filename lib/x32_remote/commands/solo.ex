@@ -2,7 +2,7 @@ defmodule X32Remote.Commands.Solo do
   @moduledoc """
   Commands that query or modify the solo state of the mixer.
 
-  In addition to the channel names accepted by `X32Remote.Types.Channels`,
+  In addition to the channel names accepted by `X32Remote.Types.Channel`,
   these commands also accept `dca/01` through `dca/08` to listen to DCA groups.
   """
 
@@ -10,7 +10,7 @@ defmodule X32Remote.Commands.Solo do
 
   alias X32Remote.Session
   import X32Remote.Types
-  import X32Remote.Types.Channels
+  import X32Remote.Types.Channel
 
   # Unlike most commands that specify a channel, we need to use special ID
   # numbers to specify solo devices.  From the unofficial API document:

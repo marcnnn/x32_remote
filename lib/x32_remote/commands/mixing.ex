@@ -3,7 +3,7 @@ defmodule X32Remote.Commands.Mixing do
   Commands that query or modify how channels are mixed.
 
   For all functions, the `channel` argument must be a valid channel name, in
-  `"type/##"` format.  See `X32Remote.Types.Channels` for a list of valid channels.
+  `"type/##"` format.  See `X32Remote.Types.Channel` for a list of valid channels.
   """
 
   use X32Remote.Commands
@@ -11,7 +11,7 @@ defmodule X32Remote.Commands.Mixing do
   alias X32Remote.Session
 
   import X32Remote.Types
-  import X32Remote.Types.Channels
+  import X32Remote.Types.Channel
 
   @doc """
   Query if a channel is muted.
@@ -167,8 +167,8 @@ defmodule X32Remote.Commands.Mixing do
       iex> X32Remote.Commands.Mixing.get_panning(session, "ch/20")
       0.20000000298023224
   """
-  defcommand set_panning(session, channel, value) when is_percent(value) do
+  defcommand set_panning(session, channel, panning) when is_panning(panning) do
     ensure_channel(channel)
-    Session.cast_command(session, "/#{channel}/mix/pan", [value])
+    Session.cast_command(session, "/#{channel}/mix/pan", [panning])
   end
 end

@@ -3,7 +3,7 @@ defmodule X32Remote.Commands.MainOut do
   Commands that query or modify how channels are routed to the main output.
 
   For all functions, the `channel` argument must be a valid channel name, in
-  `"type/##"` format.  See `X32Remote.Types.Channels` for a list of valid channels.
+  `"type/##"` format.  See `X32Remote.Types.Channel` for a list of valid channels.
   """
 
   use X32Remote.Commands
@@ -11,7 +11,7 @@ defmodule X32Remote.Commands.MainOut do
   alias X32Remote.Session
 
   import X32Remote.Types
-  import X32Remote.Types.Channels
+  import X32Remote.Types.Channel
 
   @doc """
   Query if a channel is sending audio to the stereo ("LR") main output.
