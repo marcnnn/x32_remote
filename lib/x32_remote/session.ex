@@ -12,13 +12,18 @@ defmodule X32Remote.Session do
   expect a reply, or `cast_command/3` if you do not.  (See the "How replies
   work" section below.)
 
-  Most programs will not need to directly use this module at all.
-  `X32Remote.Mixer` provides a ready-to-use version of the X32 command set,
-  suitable for use if your program only needs to talk to a single mixer.  If
-  you need to talk to multiple mixers simultaneously, you can still use the
-  `X32Remote.Commands.*` modules to use the X32 command set.  Using the call/cast
-  functions directly can be useful for commands that this library does not
-  (yet) support, however.
+  Most programs will not need to directly use this module at all:
+
+  * `X32Remote.Mixer` provides a ready-to-use version of the X32 command set,
+  suitable for use if your program only needs to talk to a single mixer.
+
+  * If you need to talk to multiple mixers simultaneously, you can launch
+  supervised client-session pairs with `X32Remote.Supervisor`, and use the
+  `X32Remote.Commands.*` modules directly to select which session to send each
+  command to.
+
+  Using the `call_*` / `cast_*` functions directly can be useful for commands that this
+  library does not (yet) support, however.
 
   ## How replies work
 
@@ -26,7 +31,7 @@ defmodule X32Remote.Session do
   built-in concept of "replies".
 
   To simulate replies, when receiving an OSC message that requests the value of
-  a mixer parameter at a given `path`, the X32 devices responds by sending a
+  a mixer parameter at a given `path`, the X32 device responds by sending a
   return message using the same `path`, with the response data in the
   arguments.
 
@@ -36,7 +41,7 @@ defmodule X32Remote.Session do
 
   Many commands do not produce a reply.  As a general rule, commands that
   **get** mixer parameters will have a reply, while those that **set** mixer
-  parameters will not.  (There are exceptions to both of these rules, though.)
+  parameters will not.  (There are exceptions to both of these rules.)
 
   Typically, these "getters" and "setters" both use the same `path`, with their
   behaviour depending on whether the request has arguments or not.  For
@@ -83,9 +88,8 @@ defmodule X32Remote.Session do
   Aside from the path, there is no way to identify **exactly** which "get"
   command a reply is in response to.
 
-  Given this limitation, there are at least two cases where we might issue a
-  request for a fader parameter, but before we can receive "our" reply, we
-  receive a different matching message for that parameter:
+  Given this limitation, there are at least two cases where we might mistakenly
+  return the "wrong" reply:
 
   * If multiple processes are using the same `X32Remote.Session` (or the
   underlying `ExOSC.Client`) and they issue the same "get" command at the same
@@ -94,8 +98,10 @@ defmodule X32Remote.Session do
   * If you issue the `/xremote` command (which reports whenever mixer settings
   change) and the value gets changed as you're requesting it.
 
-  However, this is not usually a problem, since you're receiving current
-  information about the resource you requested either way.
+  In both these cases, the **first** incoming message with a matching `path`
+  will be returned, even if that particular message was not a result of the
+  corresponding request.  However, this is not usually a problem, since you're
+  receiving current information about the resource you requested either way.
 
   (Be aware that when you issue "set" commands, those changes may not
   immediately show up in "get" commands, even if you are the only client
