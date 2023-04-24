@@ -38,7 +38,7 @@ defmodule X32Remote.Builder.Commands do
       @commands {
         unquote(fname),
         unquote(args),
-        @doc |> X32Remote.Builder.Commands.doc_summary()
+        Module.get_attribute(__MODULE__, :doc) |> X32Remote.Builder.Commands.doc_summary()
       }
       def unquote(defn), unquote(body)
     end
@@ -56,7 +56,9 @@ defmodule X32Remote.Builder.Commands do
   def extract_arg_name({arg, _, nil}), do: arg
   def extract_arg_name({:=, _, [_, {arg, _, nil}]}), do: arg
 
-  def doc_summary(doc) do
+  def doc_summary(nil), do: nil
+
+  def doc_summary({_, doc}) do
     doc
     |> String.split("\n", parts: 2)
     |> Enum.at(0)
