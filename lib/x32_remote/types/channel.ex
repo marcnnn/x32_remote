@@ -17,6 +17,13 @@ defmodule X32Remote.Types.Channel do
   channel, `ch/5` is not.
   """
 
+  @typedoc "An X32 mixer channel, in `type/##` format"
+  @type channel :: binary
+  @typedoc "A one- or two-digit integer."
+  @type twodigit_integer :: 0..99
+  @typedoc "A one- or two-digit integer, as a two-character zero-padded string."
+  @type twodigit_binary :: <<_::16>>
+
   @doc """
   Checks if a string refers to a valid channel name.
 
@@ -31,13 +38,6 @@ defmodule X32Remote.Types.Channel do
   def channel?("main/st"), do: true
   def channel?("main/m"), do: true
   def channel?(_ch), do: false
-
-  @typedoc "An X32 mixer channel, in `type/##` format"
-  @type channel :: binary
-  @typedoc "A one- or two-digit integer."
-  @type twodigit_integer :: 0..99
-  @typedoc "A one- or two-digit integer, as a two-character zero-padded string."
-  @type twodigit_binary :: <<_::16>>
 
   @doc """
   Converts a two-character string into a one- or two-digit integer.

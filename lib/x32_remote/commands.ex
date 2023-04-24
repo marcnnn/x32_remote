@@ -22,7 +22,6 @@ defmodule X32Remote.Commands do
 
       @moduledoc @moduledoc <> "\n\n" <> X32Remote.Commands.shared_moduledoc()
 
-      @typedoc "A reference to a running `X32Remote.Session`"
       @type session :: X32Remote.Session.session()
     end
   end

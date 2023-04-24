@@ -3,6 +3,8 @@ defmodule X32Remote.Types do
   Guards and functions relating to X32 argument and return types.
   """
 
+  @typedoc "Fader volume, as integer (`0` to `1024`) or float (`0.0` to `1.0`)"
+  @type volume :: 0..1024 | float
   @typedoc "Mono level, as integer (`0` to `160`) or float (`0.0` to `1.0`)"
   @type mono_level :: 0..160 | float
   @typedoc "Panning (left to right), as integer (`0` to `100`) or float (`0.0` to `1.0`)"

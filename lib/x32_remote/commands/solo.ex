@@ -8,6 +8,8 @@ defmodule X32Remote.Commands.Solo do
 
   use X32Remote.Commands
 
+  typespec(:channel)
+
   # Unlike most commands that specify a channel, we need to use special ID
   # numbers to specify solo devices.  From the unofficial API document:
   #
@@ -55,6 +57,7 @@ defmodule X32Remote.Commands.Solo do
       iex> X32Remote.Commands.Solo.solo?(session, "ch/05")
       true
   """
+  @spec solo?(session, channel) :: boolean
   defcommand solo?(session, channel) do
     id = Map.fetch!(@solo_ids, channel)
     Session.call_command(session, "/-stat/solosw/#{id}", []) |> to_boolean()
@@ -70,6 +73,7 @@ defmodule X32Remote.Commands.Solo do
       iex> X32Remote.Commands.Solo.solo?(session, "ch/06")
       true
   """
+  @spec enable_solo(session, channel) :: :ok
   defcommand enable_solo(session, channel) do
     id = Map.fetch!(@solo_ids, channel)
     Session.cast_command(session, "/-stat/solosw/#{id}", [1])
@@ -85,6 +89,7 @@ defmodule X32Remote.Commands.Solo do
       iex> X32Remote.Commands.Solo.solo?(session, "ch/07")
       false
   """
+  @spec disable_solo(session, channel) :: :ok
   defcommand disable_solo(session, channel) do
     id = Map.fetch!(@solo_ids, channel)
     Session.cast_command(session, "/-stat/solosw/#{id}", [0])
@@ -106,6 +111,7 @@ defmodule X32Remote.Commands.Solo do
       iex> X32Remote.Commands.Solo.any_solo?(session)
       false
   """
+  @spec any_solo?(session) :: boolean
   defcommand any_solo?(session) do
     Session.call_command(session, "/-stat/solo", []) |> to_boolean()
   end
@@ -122,6 +128,7 @@ defmodule X32Remote.Commands.Solo do
       iex> X32Remote.Commands.Solo.any_solo?(session)
       false
   """
+  @spec clear_solo(session) :: :ok
   defcommand clear_solo(session) do
     Session.cast_command(session, "/-action/clearsolo", [1])
   end

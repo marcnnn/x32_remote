@@ -22,6 +22,7 @@ defmodule X32Remote.Commands.Setup do
       iex> X32Remote.Commands.Setup.set_clock(session, ndt)
       :ok
   """
+  @spec set_clock(session, NaiveDateTime.t()) :: :ok
   defcommand set_clock(session, %NaiveDateTime{} = ndt) do
     Session.cast_command(session, "/-action/setclock", [ndt |> Calendar.strftime("%Y%m%d%H%M%S")])
   end
