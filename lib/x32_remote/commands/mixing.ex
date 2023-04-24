@@ -8,6 +8,9 @@ defmodule X32Remote.Commands.Mixing do
 
   use X32Remote.Commands
 
+  typespec(:channel)
+  typespec(:volume)
+  typespec(:panning)
 
   @doc """
   Query if a channel is muted.
@@ -27,6 +30,7 @@ defmodule X32Remote.Commands.Mixing do
       iex> X32Remote.Commands.Mixing.muted?(session, "ch/05")
       true
   """
+  @spec muted?(session, channel) :: boolean
   defcommand muted?(session, channel) do
     ensure_channel(channel)
 
@@ -51,6 +55,7 @@ defmodule X32Remote.Commands.Mixing do
       iex> X32Remote.Commands.Mixing.muted?(session, "ch/06")
       true
   """
+  @spec mute(session, channel) :: :ok
   defcommand mute(session, channel) do
     ensure_channel(channel)
     Session.cast_command(session, "/#{channel}/mix/on", [0])
@@ -72,6 +77,7 @@ defmodule X32Remote.Commands.Mixing do
       iex> X32Remote.Commands.Mixing.muted?(session, "ch/07")
       false
   """
+  @spec unmute(session, channel) :: :ok
   defcommand unmute(session, channel) do
     ensure_channel(channel)
     Session.cast_command(session, "/#{channel}/mix/on", [1])
@@ -94,6 +100,7 @@ defmodule X32Remote.Commands.Mixing do
       iex> X32Remote.Commands.Mixing.get_fader(session, "ch/17")
       0.7497556209564209
   """
+  @spec get_fader(session, channel) :: float
   defcommand get_fader(session, channel) do
     ensure_channel(channel)
     Session.call_command(session, "/#{channel}/mix/fader", []) |> to_float()
@@ -119,6 +126,7 @@ defmodule X32Remote.Commands.Mixing do
       iex> X32Remote.Commands.Mixing.get_fader(session, "ch/18")
       0.4995112419128418
   """
+  @spec set_fader(session, channel, volume) :: :ok
   defcommand set_fader(session, channel, volume) when is_volume(volume) do
     ensure_channel(channel)
     Session.cast_command(session, "/#{channel}/mix/fader", [volume])
@@ -139,6 +147,7 @@ defmodule X32Remote.Commands.Mixing do
       iex> X32Remote.Commands.Mixing.get_panning(session, "ch/19")
       0.5
   """
+  @spec get_panning(session, channel) :: float
   defcommand get_panning(session, channel) do
     ensure_channel(channel)
     Session.call_command(session, "/#{channel}/mix/pan", []) |> to_float()
@@ -163,6 +172,7 @@ defmodule X32Remote.Commands.Mixing do
       iex> X32Remote.Commands.Mixing.get_panning(session, "ch/20")
       0.20000000298023224
   """
+  @spec set_panning(session, channel, panning) :: :ok
   defcommand set_panning(session, channel, panning) when is_panning(panning) do
     ensure_channel(channel)
     Session.cast_command(session, "/#{channel}/mix/pan", [panning])

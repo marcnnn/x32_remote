@@ -22,6 +22,7 @@ defmodule X32Remote.Commands.Info do
       iex> X32Remote.Commands.Info.info(session)
       ["V2.07", "osc-server", "X32RACK", "4.06-8"]
   """
+  @spec info(session) :: [binary]
   defcommand(info(session), do: Session.call_command(session, "/info", []))
 
   @doc """
@@ -39,6 +40,7 @@ defmodule X32Remote.Commands.Info do
       iex> X32Remote.Commands.Info.xinfo(session)
       ["192.168.4.5", "My Mixer", "X32RACK", "4.06-8"]
   """
+  @spec xinfo(session) :: [binary]
   defcommand(xinfo(session), do: Session.call_command(session, "/xinfo", []))
 
   @doc """
@@ -55,5 +57,6 @@ defmodule X32Remote.Commands.Info do
       iex> X32Remote.Commands.Info.status(session)
       ["active", "192.168.4.5", "My Mixer"]
   """
+  @spec status(session) :: [binary]
   defcommand(status(session), do: Session.call_command(session, "/status", []))
 end

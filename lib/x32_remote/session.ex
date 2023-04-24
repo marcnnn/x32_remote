@@ -115,6 +115,9 @@ defmodule X32Remote.Session do
     )
   end
 
+  @typedoc "A reference to a running `X32Remote.Session`"
+  @type session :: GenStage.stage()
+
   @typedoc "Options used by `start_link/1`"
   @type options :: [option]
 
@@ -152,7 +155,7 @@ defmodule X32Remote.Session do
 
   Returns the received reply, as an `OSC.Message` structure.
   """
-  @spec call_message(GenStage.stage(), Message.t()) :: Message.args()
+  @spec call_message(session, Message.t()) :: Message.args()
   def call_message(session, %Message{} = msg) do
     GenStage.call(session, {:send_wait, msg})
   end
@@ -171,7 +174,7 @@ defmodule X32Remote.Session do
   Always returns `:ok` immediately, regardless of whether the session exists,
   and/or whether it handled the message successfully.
   """
-  @spec cast_message(GenStage.stage(), Message.t()) :: :ok
+  @spec cast_message(session, Message.t()) :: :ok
   def cast_message(session, %Message{} = msg) do
     GenStage.cast(session, {:send, msg})
   end
@@ -187,7 +190,7 @@ defmodule X32Remote.Session do
 
   Returns the `args` list from the received reply.
   """
-  @spec call_command(GenStage.stage(), Message.path(), Message.args()) :: Message.args()
+  @spec call_command(session, Message.path(), Message.args()) :: Message.args()
   def call_command(session, path, args \\ []) do
     msg = Message.construct(path, args)
     call_message(session, msg).args
@@ -204,7 +207,7 @@ defmodule X32Remote.Session do
   Always returns `:ok` immediately, regardless of whether the session exists,
   and/or whether it handled the message successfully.
   """
-  @spec cast_command(GenStage.stage(), Message.path(), Message.args()) :: :ok
+  @spec cast_command(session, Message.path(), Message.args()) :: :ok
   def cast_command(session, path, args \\ []) do
     msg = Message.construct(path, args)
     cast_message(session, msg)

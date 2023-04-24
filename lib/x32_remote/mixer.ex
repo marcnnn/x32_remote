@@ -31,11 +31,5 @@ defmodule X32Remote.Mixer do
     X32Remote.Commands.Info,
     X32Remote.Commands.Setup
   ]
-  |> Enum.flat_map(fn module ->
-    module.__commands__()
-    |> Enum.map(fn {fname, args, summary} -> {module, fname, args, summary} end)
-  end)
-  |> Enum.each(fn {module, fname, args, summary} ->
-    X32Remote.Mixer.Builder.defcurried(module, fname, args, summary, session: @session)
-  end)
+  |> X32Remote.Mixer.Builder.build()
 end
