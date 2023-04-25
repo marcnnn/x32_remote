@@ -22,7 +22,7 @@ defmodule X32Remote.Types do
   Commands that get volume will always return the float value.  Commands that
   set volume can accept either value.
 
-  Allowed in guard tests.
+  Allowed in guard tests.  Inlined by the compiler.
   """
   @doc guard: true
   @spec is_volume(term) :: boolean
@@ -41,7 +41,7 @@ defmodule X32Remote.Types do
   Commands that get mono levels will always return the float value.  Commands
   that set mono levels can accept either value.
 
-  Allowed in guard tests.
+  Allowed in guard tests.  Inlined by the compiler.
   """
   @doc guard: true
   @spec is_mono_level(term) :: boolean
@@ -61,7 +61,7 @@ defmodule X32Remote.Types do
   Commands that get panning values will always return the float value.
   Commands that set panning values can accept either type.
 
-  Allowed in guard tests.
+  Allowed in guard tests.  Inlined by the compiler.
   """
   @doc guard: true
   @spec is_panning(term) :: boolean
