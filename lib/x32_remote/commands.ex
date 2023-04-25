@@ -20,7 +20,9 @@ defmodule X32Remote.Commands do
       import X32Remote.Types.Channel
       import X32Remote.Types.Specs, only: [typespec: 1]
 
-      @moduledoc @moduledoc <> "\n\n" <> X32Remote.Commands.shared_moduledoc()
+      if @moduledoc do
+        @moduledoc @moduledoc <> "\n\n" <> X32Remote.Commands.shared_moduledoc()
+      end
 
       @type session :: X32Remote.Session.session()
     end
