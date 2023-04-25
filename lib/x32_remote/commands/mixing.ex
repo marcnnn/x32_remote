@@ -9,8 +9,8 @@ defmodule X32Remote.Commands.Mixing do
   use X32Remote.Commands
 
   typespec(:channel)
-  typespec(:volume)
-  typespec(:panning)
+  @type volume :: X32Remote.Types.volume()
+  @type panning :: X32Remote.Types.panning()
 
   @doc """
   Query if a channel is muted.

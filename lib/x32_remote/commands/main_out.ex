@@ -9,7 +9,7 @@ defmodule X32Remote.Commands.MainOut do
   use X32Remote.Commands
 
   typespec(:channel)
-  typespec(:mono_level)
+  @type mono_level :: X32Remote.Types.mono_level()
 
   @doc """
   Query if a channel is sending audio to the stereo ("LR") main output.
