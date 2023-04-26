@@ -29,6 +29,13 @@ defmodule X32Remote.Types.Program do
   @typedoc "A slot number, as a three-character zero-padded string."
   @type threedigit :: <<_::24>>
 
+  @typedoc ~s{A parameter than can be marked as "safe".}
+  @type safe_param ::
+          unquote(
+            X32Remote.Commands.Safes.all_safe_params()
+            |> X32Remote.Helpers.Safes.to_typespec()
+          )
+
   @doc """
   Returns `true` if `term` is a channel preset slot; otherwise returns `false`.
 

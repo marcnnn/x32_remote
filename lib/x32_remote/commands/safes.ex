@@ -40,7 +40,7 @@ defmodule X32Remote.Commands.Safes do
     * `dca/01` through `dca/08`
     * `fx/01` through `fx/08`
 
-  To access a list of all posible safe channels, see `all_safe_channels/0`.
+  For a list of all posible safe channels, see `all_safe_channels/0`.
 
   ## Safe parameters
 
@@ -74,7 +74,7 @@ defmodule X32Remote.Commands.Safes do
     * `:console_routing` — routing
     * `:console_out_patch` — output patch
 
-  To access a list of all posible safe parameters, see `all_safe_params/0`.
+  For a list of all posible safe parameters, see `all_safe_params/0`.
   """
 
   use X32Remote.Commands
@@ -132,7 +132,7 @@ defmodule X32Remote.Commands.Safes do
   @doc "Returns a list of all possible safe channels."
   def all_safe_channels, do: @all_safe_channels
 
-  @type safe_param :: unquote(to_typespec(@all_safe_params))
+  @type safe_param :: X32Remote.Types.Program.safe_param()
   typespec(:channel)
 
   @doc """
