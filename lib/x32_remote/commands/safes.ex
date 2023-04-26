@@ -128,8 +128,10 @@ defmodule X32Remote.Commands.Safes do
   @safe_channels_map map_safes_by_name(@safe_channels)
 
   @doc "Returns a list of all possible safe parameters."
+  @spec all_safe_params :: [safe_param]
   def all_safe_params, do: @all_safe_params
   @doc "Returns a list of all possible safe channels."
+  @spec all_safe_channels :: [channel]
   def all_safe_channels, do: @all_safe_channels
 
   @type safe_param :: X32Remote.Types.Program.safe_param()
@@ -197,7 +199,11 @@ defmodule X32Remote.Commands.Safes do
 
   ## Example
 
-      iex> X32Remote.Commands.Safes.set_safe_params(session)
+      iex> safes = X32Remote.Commands.Safes.get_safe_params(session)
+      [:mix_14_sends, :mix_bus_eq]
+      iex> X32Remote.Commands.Safes.set_safe_params(session, safes ++ [:console_solo, :input_groups])
+      :ok
+      iex> X32Remote.Commands.Safes.get_safe_params(session)
       [:input_groups, :mix_14_sends, :mix_bus_eq, :console_solo]
   """
   @spec set_safe_params(session, [safe_param]) :: :ok
@@ -225,8 +231,12 @@ defmodule X32Remote.Commands.Safes do
 
   ## Example
 
-      iex> X32Remote.Commands.Safes.set_safe_channels(session)
-      [:input_groups, :mix_14_sends, :mix_bus_eq, :console_solo]
+      iex> safes = X32Remote.Commands.Safes.get_safe_channels(session)
+      ["ch/01", "ch/04", "bus/06"]
+      iex> X32Remote.Commands.Safes.set_safe_channels(session, safes ++ ["mtx/03", "ch/23"])
+      :ok
+      iex> X32Remote.Commands.Safes.get_safe_channels(session)
+      ["ch/01", "ch/04", "ch/23", "bus/06", "mtx/03"]
   """
   @spec set_safe_channels(session, [channel]) :: :ok
   defcommand set_safe_channels(session, channels) do
