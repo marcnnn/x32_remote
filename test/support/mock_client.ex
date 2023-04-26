@@ -3,15 +3,18 @@ defmodule X32R.MockClient do
   alias OSC.Message
 
   defmodule State do
+    @enforce_keys [:reply_mode]
     defstruct(
       requests: :queue.new(),
       replies: :queue.new(),
+      reply_mode: nil,
       waiting: nil
     )
   end
 
   def start_link(opts) do
-    GenStage.start_link(__MODULE__, :mock, opts)
+    {reply_mode, opts} = Keyword.pop(opts, :reply_mode, :all)
+    GenStage.start_link(__MODULE__, reply_mode, opts)
   end
 
   # Flush all requests (i.e. outbound UDP) as a list.
@@ -23,9 +26,14 @@ defmodule X32R.MockClient do
   # This can safely be called even if the Session has not connected to the MockClient yet.
   def mock_reply(pid, %Message{} = msg), do: GenStage.cast(pid, {:mock_reply, msg})
 
+  def wait_requests(pid, count) do
+    1..count
+    |> Enum.map(fn _ -> next_request(pid) end)
+  end
+
   @impl true
-  def init(:mock) do
-    {:producer, %State{}}
+  def init(reply_mode) when reply_mode in [:all, :one] do
+    {:producer, %State{reply_mode: reply_mode}}
   end
 
   # Dump requests and clear the requests queue.
@@ -70,7 +78,14 @@ defmodule X32R.MockClient do
           %State{state | requests: :queue.in(msg, state.requests)}
       end
 
-    {:noreply, :queue.to_list(state.replies), %State{state | replies: :queue.new()}}
+    case state.reply_mode do
+      :all ->
+        {:noreply, :queue.to_list(state.replies), %State{state | replies: :queue.new()}}
+
+      :one ->
+        {events, replies} = state.replies |> maybe_pop_event()
+        {:noreply, events, %State{state | replies: replies}}
+    end
   end
 
   @impl true
@@ -80,4 +95,11 @@ defmodule X32R.MockClient do
 
   defp set_waiting(%State{waiting: nil} = state, {_, _} = from), do: %State{state | waiting: from}
   defp set_waiting(%State{waiting: {_, _}}, _), do: raise("double wait on MockClient")
+
+  defp maybe_pop_event(replies) do
+    case :queue.out(replies) do
+      {{:value, msg}, queue} -> {[msg], queue}
+      {:empty, queue} -> {[], queue}
+    end
+  end
 end
