@@ -54,7 +54,7 @@ defmodule X32Remote.Commands.Safes do
     * `:input_groups` — groups
     * `:input_fader_pan` — fader, panning
     * `:input_mute` — mute
-    * `:mix_1_sends` through `:mix_16_sends` — channel sends to each mix bus
+    * `:mix_01_sends` through `:mix_16_sends` — channel sends to each mix bus
 
   These parameters apply to all mix buses:
 
@@ -89,7 +89,7 @@ defmodule X32Remote.Commands.Safes do
       |> Enum.map(fn s -> :"input_#{s}" end),
     mxsends:
       1..16
-      |> Enum.map(fn n -> :"mix_#{n}_sends" end),
+      |> Enum.map(fn n -> :"mix_#{to_twodigit(n)}_sends" end),
     mxbuses:
       ~w"matrix_sends config eq comp insert groups fader_pan mute"
       |> Enum.map(fn s -> :"mix_bus_#{s}" end),
