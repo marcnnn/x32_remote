@@ -1,4 +1,7 @@
 defmodule X32Remote.Commands.Scene do
+  @moduledoc """
+  Commands that operate on mixer scenes.
+  """
   use X32Remote.Commands
 
   import X32Remote.Types.Program

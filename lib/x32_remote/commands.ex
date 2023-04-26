@@ -7,7 +7,18 @@ defmodule X32Remote.Commands do
   versions that omit this first argument, see `X32Remote.Mixer`.
   """
 
-  def shared_moduledoc, do: @shared_moduledoc
+  def insert_shared_moduledoc(nil), do: nil
+
+  # Inserts @shared_moduledoc just before the first section header (if any).
+  def insert_shared_moduledoc(doc) when is_binary(doc) do
+    case String.split(doc, ~r/^#/m, parts: 2) do
+      [header, rest] ->
+        "#{header}#{@shared_moduledoc}\n##{rest}"
+
+      all ->
+        "#{all}\n\n#{@shared_moduledoc}"
+    end
+  end
 
   defmacro __using__(_opts) do
     quote do
@@ -20,9 +31,7 @@ defmodule X32Remote.Commands do
       import X32Remote.Types.Channel
       import X32Remote.Types.Specs, only: [typespec: 1]
 
-      if @moduledoc do
-        @moduledoc @moduledoc <> "\n\n" <> X32Remote.Commands.shared_moduledoc()
-      end
+      @moduledoc @moduledoc |> X32Remote.Commands.insert_shared_moduledoc()
 
       @type session :: X32Remote.Session.session()
     end
