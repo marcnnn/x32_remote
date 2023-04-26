@@ -30,7 +30,8 @@ defmodule X32Remote.Mixer do
     X32Remote.Commands.Solo,
     X32Remote.Commands.Info,
     X32Remote.Commands.Setup,
-    X32Remote.Commands.Scene
+    X32Remote.Commands.Scene,
+    X32Remote.Commands.Safes
   ]
   |> X32Remote.Builder.Mixer.build()
 end
