@@ -13,7 +13,7 @@ defmodule X32R.MockClient do
   end
 
   def start_link(opts) do
-    {reply_mode, opts} = Keyword.pop(opts, :reply_mode, :all)
+    {reply_mode, opts} = Keyword.pop(opts, :reply_mode, nil)
     GenStage.start_link(__MODULE__, reply_mode, opts)
   end
 
@@ -32,7 +32,7 @@ defmodule X32R.MockClient do
   end
 
   @impl true
-  def init(reply_mode) when reply_mode in [:all, :one] do
+  def init(reply_mode) when reply_mode in [:all, :one, nil] do
     {:producer, %State{reply_mode: reply_mode}}
   end
 
@@ -85,6 +85,13 @@ defmodule X32R.MockClient do
       :one ->
         {events, replies} = state.replies |> maybe_pop_event()
         {:noreply, events, %State{state | replies: replies}}
+
+      nil ->
+        case :queue.to_list(state.replies) do
+          [] -> {:noreply, [], state}
+          [msg] -> {:noreply, [msg], %State{state | replies: :queue.new()}}
+          list -> raise "Found #{Enum.count(list)} replies on queue, must specify `reply_mode`"
+        end
     end
   end
 

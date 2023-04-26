@@ -37,7 +37,7 @@ defmodule X32Remote.SessionTest do
   end
 
   test "call_* ignores messages for other paths" do
-    {:ok, client, session} = setup_mock_session()
+    {:ok, client, session} = setup_mock_session(reply_mode: :all)
 
     MockClient.mock_reply(client, %Message{path: "/ch/01/mix/fader", args: [0.10]})
     MockClient.mock_reply(client, %Message{path: "/ch/02/mix/fader", args: [0.20]})
