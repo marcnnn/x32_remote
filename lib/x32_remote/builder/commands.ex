@@ -16,7 +16,11 @@ defmodule X32Remote.Builder.Commands do
   defmacro __before_compile__(_env) do
     quote do
       @commands_with_specs X32Remote.Builder.Commands.add_specs(@commands, @spec)
-      @command_typespecs X32Remote.Builder.Commands.index_typespecs(@type)
+      @command_typespecs X32Remote.Builder.Commands.index_typespecs(
+                           @type,
+                           __MODULE__,
+                           __ENV__.file
+                         )
 
       def __commands__, do: @commands_with_specs
       def __typespecs__, do: @command_typespecs
@@ -72,10 +76,10 @@ defmodule X32Remote.Builder.Commands do
   defp extract_spec({:spec, spec, _}), do: spec
   defp get_spec_name({:"::", _, [{fname, _, _} | _]}), do: fname
 
-  def index_typespecs(types) do
+  def index_typespecs(types, module, file) do
     types
     |> Enum.map(&extract_typespec/1)
-    |> Map.new(fn ts -> {get_spec_name(ts), ts} end)
+    |> Map.new(fn ts -> {get_spec_name(ts), {module, file, ts}} end)
   end
 
   defp extract_typespec({:type, typespec, _}), do: typespec

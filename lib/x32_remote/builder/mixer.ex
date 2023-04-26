@@ -10,8 +10,8 @@ defmodule X32Remote.Builder.Mixer do
       |> Enum.map(& &1.__typespecs__())
       |> Enum.reduce(&Map.merge/2)
       |> Map.delete(:session)
-      |> Enum.each(fn {key, spec} ->
-        @type unquote(spec)
+      |> Enum.each(fn {key, {module, file, spec}} ->
+        @type unquote(X32Remote.Builder.Mixer.typespec_or_reference(module, file, spec))
       end)
 
       modules
@@ -93,5 +93,22 @@ defmodule X32Remote.Builder.Mixer do
       {arg, _, _} when is_atom(arg) -> Keyword.has_key?(to_replace, arg)
       _ -> false
     end)
+  end
+
+  def typespec_or_reference(module, file, {:"::", ctx, [name, content]} = spec) do
+    case content do
+      {{:., _, [{:__aliases__, _, [:X32Remote, :Types | _]}, _]}, _, _} ->
+        # It's a reference to a type in X32Remote.Types (or a submodule), so that's fine.
+        spec
+
+      _ ->
+        {name_atom, _, _} = name
+        msg = "Typespec `#{name_atom}` should refer to a type in `X32Remote.Types`."
+        IO.warn(msg, Keyword.put(ctx, :file, file))
+
+        quote do
+          unquote(name) :: unquote(module).unquote(name)
+        end
+    end
   end
 end
