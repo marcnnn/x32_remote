@@ -43,7 +43,7 @@ iex> X32Remote.Mixer.get_fader("ch/17")
 
 Full documentation can be found at <https://hexdocs.pm/x32_remote>.
 
-The X32 command set is huge, and this library only implements a subset of it.  If X32Remote does not (yet) do what you need it to do, you may want to look at the [unofficial X32 OSC protocol document](https://drive.google.com/file/d/1Snbwx3m6us6L1qeP1_pD6s8hbJpIpD0a/view) courtesy of Patrick-Gilles Maillot, who also provides [tools to work with X32 hardware](https://sites.google.com/site/patrickmaillot/x32).  (Thanks Patrick!)
+The X32 command set is huge, and this library only implements a subset of it.  If X32Remote does not (yet) do what you need it to do, you may want to look at the [unofficial X32 OSC protocol document](https://drive.google.com/file/d/1Snbwx3m6us6L1qeP1_pD6s8hbJpIpD0a/view) courtesy of Patrick-Gilles Maillot, who also provides [tools to work with X32 hardware](https://sites.google.com/site/patrickmaillot/x32).  (Thanks Patrick-Gilles!)
 
 ## Legal stuff
 
