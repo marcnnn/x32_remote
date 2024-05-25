@@ -34,9 +34,11 @@ defmodule X32Remote.Commands.Mixing do
   defcommand muted?(session, channel) do
     ensure_channel(channel)
 
-    Session.call_command(session, "/#{channel}/mix/on", [])
-    |> to_boolean()
-    |> Kernel.not()
+    Commands.call(session, "/#{channel}/mix/on", fn result ->
+      result
+      |> to_boolean()
+      |> Kernel.not()
+    end)
   end
 
   @doc """

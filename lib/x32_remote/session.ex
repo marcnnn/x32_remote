@@ -221,8 +221,7 @@ defmodule X32Remote.Session do
 
   @impl true
   def init(client) do
-    GenStage.async_subscribe(self(), to: client)
-    {:consumer, %State{client: client}}
+    {:consumer, %State{client: client}, subscribe_to: [client]}
   end
 
   @impl true
@@ -250,10 +249,12 @@ defmodule X32Remote.Session do
     {:noreply, [], state}
   end
 
-  defp handle_one_event(%Message{} = msg, state) do
-    Logger.debug("<<< #{inspect(msg)}")
+  defp handle_one_event({:in, %Message{} = msg}, state) do
     {reply_to, replies} = Map.pop(state.replies, msg.path, [])
+    unless Enum.empty?(reply_to), do: Logger.debug("<<< #{inspect(msg)}")
     Enum.each(reply_to, &GenStage.reply(&1, msg))
     %State{state | replies: replies}
   end
+
+  defp handle_one_event({{:out, _}, _}, state), do: state
 end

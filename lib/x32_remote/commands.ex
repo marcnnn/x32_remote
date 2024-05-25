@@ -20,11 +20,21 @@ defmodule X32Remote.Commands do
     end
   end
 
+  def call(:subscribe, path, result_fun) do
+    {:subscribe, path, result_fun}
+  end
+
+  def call(session, path, result_fun) when is_pid(session) or is_atom(session) do
+    X32Remote.Session.call_command(session, path, [])
+    |> result_fun.()
+  end
+
   defmacro __using__(_opts) do
     quote do
       use X32Remote.Builder.Commands
 
       alias X32Remote.Session
+      alias X32Remote.Commands
 
       require X32Remote.Types.Specs
       import X32Remote.Types
