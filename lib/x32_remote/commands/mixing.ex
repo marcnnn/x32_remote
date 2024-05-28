@@ -105,7 +105,8 @@ defmodule X32Remote.Commands.Mixing do
   @spec get_fader(session, channel) :: float
   defcommand get_fader(session, channel) do
     ensure_channel(channel)
-    Session.call_command(session, "/#{channel}/mix/fader", []) |> to_float()
+
+    Commands.call(session, "/#{channel}/mix/fader", &to_float/1)
   end
 
   @doc """

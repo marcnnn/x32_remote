@@ -4,9 +4,10 @@ defmodule X32Remote.Subscription do
 
   defmodule State do
     @moduledoc false
-    @enforce_keys [:watcher, :path, :result_fun]
+    @enforce_keys [:watcher, :tag, :path, :result_fun]
     defstruct(
       watcher: nil,
+      tag: nil,
       path: nil,
       result_fun: nil,
       last_result: nil
@@ -19,10 +20,11 @@ defmodule X32Remote.Subscription do
     {watcher, opts} = Keyword.pop!(opts, :watcher)
     {command, opts} = Keyword.pop!(opts, :command)
     {args, opts} = Keyword.pop(opts, :args, [])
+    {tag, opts} = Keyword.pop(opts, :tag, :subscription)
 
     {:subscribe, path, result_fun} = apply(command, [:subscribe | args])
 
-    GenStage.start_link(__MODULE__, {watcher, path, result_fun}, opts)
+    GenStage.start_link(__MODULE__, {watcher, tag, path, result_fun}, opts)
   end
 
   def refresh(pid) do
@@ -30,10 +32,11 @@ defmodule X32Remote.Subscription do
   end
 
   @impl true
-  def init({watcher, path, result_fun}) do
+  def init({watcher, tag, path, result_fun}) do
     {:producer_consumer,
      %State{
        watcher: watcher,
+       tag: tag,
        path: path,
        result_fun: result_fun
      },
@@ -75,7 +78,7 @@ defmodule X32Remote.Subscription do
     {[], state}
   end
 
-  defp handle_one_event(new, %State{last_result: _old} = state) do
-    {[new], %State{state | last_result: new}}
+  defp handle_one_event(new, %State{last_result: _old, tag: tag} = state) do
+    {[{tag, new}], %State{state | last_result: new}}
   end
 end
