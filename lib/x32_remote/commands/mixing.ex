@@ -12,6 +12,28 @@ defmodule X32Remote.Commands.Mixing do
   @type volume :: X32Remote.Types.volume()
   @type panning :: X32Remote.Types.panning()
 
+
+  @doc """
+    Query the Channel Name
+
+    Returns the String
+    """
+  defcommand name?(session, channel) do
+    ensure_channel(channel)
+    Session.call_command(session, "/#{channel}/config/name")
+    |> to_string()
+  end
+
+  @doc """
+    Set the Channel Name
+    """
+  defcommand name(session, channel, name) do
+    ensure_channel(channel)
+    Session.cast_command(session, "/#{channel}/config/name", [name])
+  end
+
+
+
   @doc """
   Query if a channel is muted.
 
